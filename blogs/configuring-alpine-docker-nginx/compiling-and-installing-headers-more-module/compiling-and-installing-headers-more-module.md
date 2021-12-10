@@ -41,6 +41,7 @@ Your `docker-compose` project is going to need to look a little like this.
     └── sites
         └── domain-name-one.com
 ```
+
 ---
 
 ## Alpine Docker
