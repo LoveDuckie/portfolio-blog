@@ -10,5 +10,5 @@ jobs:
       - name: Markdown-HTML
         uses: ZacJW/markdown-html-action@1.1.1
         with:
-          input_files: "/blogs/**/*"
-          output_files: "/exported"
+          input_files: "[\"/blogs/**/*.md\"]"
+          output_files: "[\"/exported\"]"
