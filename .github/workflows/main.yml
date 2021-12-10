@@ -1,0 +1,14 @@
+on:
+  push:
+    branches:
+    - main
+    
+jobs:
+  export_blogs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Markdown-HTML
+        uses: ZacJW/markdown-html-action@1.1.1
+        with:
+          input_files: "/blogs/**/*"
+          output_files: "/exported"
