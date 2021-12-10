@@ -11,4 +11,4 @@ jobs:
         uses: ZacJW/markdown-html-action@1.1.1
         with:
           input_files: '[["blogs/**/*.md"]]'
-          output_files: '[["exported/"]]'
+          output_files: 'exported/'
