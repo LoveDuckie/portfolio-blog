@@ -2,6 +2,8 @@
     "recommendations": [
         "yzhang.markdown-all-in-one",
         "davidanson.vscode-markdownlint",
-        "docsmsft.docs-markdown"
+        "docsmsft.docs-markdown",
+        "visualstudioexptteam.vscodeintellicode",
+        "njpwerner.autodocstring"
     ]
 }

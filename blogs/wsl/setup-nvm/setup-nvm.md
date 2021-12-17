@@ -21,6 +21,5 @@ If you didn't have NVM, you would find yourself having to manually install and u
 You can install Node Version Manager using the snippet from the GitHub repository here.
 
 
-
 ## Using NodeJS Installations in Visual Studio Code
 

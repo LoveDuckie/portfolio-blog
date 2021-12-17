@@ -57,10 +57,19 @@ The output should be...
 keychain is installed!
 ```
 
+Good stuff.
+
 ## Generating SSH Keys
 
 If you haven't already created SSH keys for your account yet, I would recommend going ahead and running the following command.
 
 ```bash
 ssh-keygen -t rsa -b 4096
+```
+This will generate a new private and public key pair.
+
+## Configuring SSH Keys
+
+```bash
+/usr/bin/keychain --quiet --clear /home/lshelton/.ssh/id_rsa
 ```

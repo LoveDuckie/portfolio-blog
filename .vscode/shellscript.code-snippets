@@ -1,0 +1,93 @@
+{
+    "Portfolio-Script-Header" :
+    {
+        "prefix": "scriptheader",
+        "description": "The default declarations for all scripts that use shared functions.",
+        "body": [
+            "#!/bin/bash",
+            "<<EOF",
+            "",
+            "   Portfolio Blog \\ $1 \\ $2",
+            "",
+            "   $3",
+            "",
+            "EOF",
+            "CURRENT_SCRIPT_DIRECTORY=\\${CURRENT_SCRIPT_DIRECTORY:-$(dirname \\$(realpath \\$0))}",
+            "export SHARED_SCRIPTS_PATH=\\${SHARED_SCRIPTS_PATH:-\\$(realpath \\$CURRENT_SCRIPT_DIRECTORY/scripts)}",
+            "export CURRENT_SCRIPT_FILENAME=\\${CURRENT_SCRIPT_FILENAME:-$(basename \\$0)}",
+            "export CURRENT_SCRIPT_FILENAME_BASE=\\${CURRENT_SCRIPT_FILENAME%.*}",
+            "source \"\\$SHARED_SCRIPTS_PATH/shared-functions.sh\"",
+            "write_header"
+        ]
+    },
+    "Portfolio-Script-Options" :
+    {
+        "prefix": "scriptoptions",  
+        "body": [
+            "while getopts ':$1h?' opt; do",
+            "   case \\$opt in",
+            "        $1)",
+            "            ",
+            "        ;;",
+            "        h|?)",
+            "            usage",
+            "        ;;",
+            "        :)",
+            "            write_error \"${TM_FILENAME_BASE}\" \"-\\${OPTARG} requires an argument\"",
+            "            usage",
+            "        ;;",
+            "   esac",
+            "done"
+        ]
+    },
+    "Portfolio-Write-Response" :
+    {
+        "prefix": "wr",
+        "description": "",
+        "body": [
+            "write_response \"${TM_FILENAME_BASE/(.*)/${1:/downcase}/}\" \"$1\""
+        ]
+    },
+    "Portfolio-Write-Info" :
+    {
+        "prefix": "wi",
+        "description": "",
+        "body": [
+            "write_info \"${TM_FILENAME_BASE/(.*)/${1:/downcase}/}\" \"$1\""
+        ]
+    },
+    "Portfolio-Write-Error" :
+    {
+        "prefix": "we",
+        "description": "",
+        "body": [
+            "write_error \"${TM_FILENAME_BASE/(.*)/${1:/downcase}/}\" \"$1\""
+        ]
+    },
+    "Portfolio-Write-Success" :
+    {
+        "prefix": "ws",
+        "description": "",
+        "body": [
+            "write_success \"${TM_FILENAME_BASE/(.*)/${1:/downcase}/}\" \"$1\""
+        ]
+    },
+    "Portfolio-Write-Warning" :
+    {
+        "prefix": "ww",
+        "description": "",
+        "body": [
+            "write_warning \"${TM_FILENAME_BASE/(.*)/${1:/downcase}/}\" \"$1\""
+        ]
+    },
+    "Portfolio-Null-Check" :
+    {
+        "prefix": "null",
+        "description": "A simple null check",
+        "body": [
+            "if [ -z \"$1\" ]; then",
+            "   $2",
+            "fi"
+        ]
+    }
+}
