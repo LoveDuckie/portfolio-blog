@@ -27,6 +27,6 @@ A repository for all the articles that end up published on my blog, written in m
     └── README.md
 ```
 
-## Requesting Blogs
+## Requests
 
 Feel free to open an issue or bug in this repository if you would ike me to amend anything, or if there are any topics you would be interested in seeing me write about.
