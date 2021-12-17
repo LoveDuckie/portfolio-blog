@@ -16,19 +16,33 @@ A repository for all the articles that end up published on my blog, written in m
 .
 ├── README.md
 ├── blogs
-│   └── configuring-alpine-docker-nginx
-│       ├── compiling-and-installing-headers-more-module
-│       ├── default-configurations
-│       ├── dynamically-serving-webp-images
-│       ├── extending-startup-processes
-│       ├── self-signed-ssl-certificates-for-development-purposes
+│   ├── nginx
+│   │   ├── compiling-and-installing-headers-more-module
+│   │   ├── default-configurations
+│   │   ├── dynamically-serving-webp-images
+│   │   ├── extending-startup-processes
+│   │   ├── self-signed-ssl-certificates-for-development-purposes
+│   │   ├── series.json
+│   │   ├── tips-and-tricks-for-improving-security
+│   │   └── using-gzip-compression-for-static-assets
+│   └── wsl
+│       ├── configuring-wsl-for-ssh
+│       ├── getting-started-with-wsl
 │       ├── series.json
-│       ├── tips-and-tricks-for-improving-security
-│       └── using-gzip-compression-for-static-assets
+│       ├── setup-nvm
+│       └── setup-pyenv
+├── images
+│   ├── portfolio-blog-capture.png
+│   └── portfolio-blog-header.png
 ├── schemas
 │   └── README.md
 └── scripts
-    └── README.md
+    ├── README.md
+    ├── bash
+    │   ├── publish.sh
+    │   └── shared
+    └── python
+        └── publisher
 ```
 
 ## Requests
