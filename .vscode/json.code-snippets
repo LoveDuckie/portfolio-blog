@@ -1,0 +1,16 @@
+{
+    "Portfolio-Blog" :{
+        "prefix": "blog",
+        "description": "",
+        "body": [
+            ""
+        ]   
+    },
+    "Portfolio-Blog-Series" :{
+        "prefix": "blogseries",
+        "description": "",
+        "body": [
+            ""
+        ]   
+    }
+}

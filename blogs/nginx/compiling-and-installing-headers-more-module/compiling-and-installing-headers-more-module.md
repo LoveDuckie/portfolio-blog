@@ -10,7 +10,6 @@ The [Headers More](https://www.nginx.com/resources/wiki/modules/headers_more/) m
 
 Your `docker-compose` project is going to need to look a little like this.
 
-
 ```shell
 .
 ├── containers
@@ -51,7 +50,6 @@ There are a few variants of the NGINX Docker container image, depending on which
 ## Compiling Headers More
 
 We will focus on compiling the module from source using a separate build stage for achieving this. Upon compiling the module in this build stage, we will then copy the compiled contents into the latter parts of the build.
-
 
 ```Dockerfile
 ARG NGINX_VERSION 1.20.1
