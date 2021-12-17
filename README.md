@@ -1,6 +1,7 @@
-![Portfolio Header Image](/images/portfolio-blog-header.png)
 
 # Portfolio Blog
+
+![Portfolio Header Image](/images/portfolio-blog-header.png)
 
 A repository for all the articles that end up published on my blog, written in markdown.
 
