@@ -26,14 +26,12 @@ The section labeled `automount` outlines configuration properties for altering t
 
 - `root` indicates where all host volumes will be mounted under. For example, C:\ on Windows will be mounted under `/mnt/c/`
 - `options` outlines a comma-delimited set of options for describing default CHMOD ownership and permission values to assign to files that are mounted from the host machine.
-  - `metadata` value indicates that any file permission changes made to files in mounted host volumes are persisted. For example, if I run the command 
+  - `metadata` value indicates that any file permission changes made to files in mounted host volumes are persisted. For example, if I run the command
 - `mountFsTab` indicates whether or not to mount volumes as described in the file system table configuration file `/etc/fstab`. You can read more about what [this configuration file does here.](https://wiki.debian.org/fstab)
 
 ### Network
 
 The section labeled `network` is self-evidently the configuration section responsible for describing behaviour relating to networking in the WSL2 installation.
-
-
 
 ## Setup Bash Profile
 
@@ -108,7 +106,7 @@ The above line will resolve to a configuration file being generated and saved to
 
 The contents of which look like this.
 
-```
+```bash
 <your username goes here> ALL=(ALL:ALL) NOPASSWD:ALL
 ```
 
