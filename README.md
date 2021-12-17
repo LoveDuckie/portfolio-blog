@@ -6,6 +6,8 @@ A repository for all the articles that end up published on my blog, written in m
 
 [You can read the blog on my portfolio here.](https://lucshelton.codes)
 
+![Portfolio Blog Capture](/images/portfolio-blog-capture.png)
+
 ---
 
 ## Repository Layout
