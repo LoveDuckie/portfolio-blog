@@ -4,6 +4,7 @@
         "davidanson.vscode-markdownlint",
         "docsmsft.docs-markdown",
         "visualstudioexptteam.vscodeintellicode",
-        "njpwerner.autodocstring"
+        "njpwerner.autodocstring",
+        "ms-vscode.powershell"
     ]
 }
