@@ -5,6 +5,7 @@
         "docsmsft.docs-markdown",
         "visualstudioexptteam.vscodeintellicode",
         "njpwerner.autodocstring",
-        "ms-vscode.powershell"
+        "ms-vscode.powershell",
+        "emilast.logfilehighlighter"
     ]
 }
