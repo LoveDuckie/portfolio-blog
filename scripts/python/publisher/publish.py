@@ -7,6 +7,7 @@ import os, sys, logging
 import argparse
 import re
 import json
+import threading
 import datetime
 
 from blog_series import BlogSeries
@@ -95,6 +96,10 @@ for path in os.walk(os.path.join(get_default_blogs_path(), "nginx")):
 logger = logging.Logger(name='publish-log')
 logger.addHandler(logging.FileHandler(filename='publish-log'))
 logger.addHandler(logging.StreamHandler())
+
+class ExportThread(threading.Thread):
+    def run():
+        return
 
 if parsed_args.debug:
     logger.setLevel(logging.DEBUG)
