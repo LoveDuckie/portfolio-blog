@@ -1,7 +1,8 @@
 import os, sys
 class BlogSeries(object):
-    
     def __init__(self, **kwargs) -> None:
+        for key in kwargs:
+            value = kwargs[key]
         super().__init__()
 
     @classmethod
