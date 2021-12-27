@@ -37,6 +37,17 @@ is_pyenv_available() {
     return is_command_available "pyenv"
 }
 
+is_pyenv_python_version_supported() {
+    if ! is_pyenv_installed; then
+        return 1
+    fi
+    PYENV_PYTHON_VERSION=$(pyenv global)
+    if [ -z $PYENV_PYTHON_VERSION ]; then
+        write_error "shared-functions" "pyenv python version was not discovered."
+        return 2
+    fi
+}
+
 is_pyenv_installed() {
     return [ -d ~/.pyenv ]
 }
@@ -97,6 +108,18 @@ is_package_installed() {
 
     write_error "shared-functions" "the package \"$1\" is not installed"
     return 1
+}
+
+is_virtualenv_available() {
+    if [ -d $REPO_ROOT_PATH/scripts/python/venv ]; then
+        return 0
+    fi
+
+    return 1
+}
+
+create_virtualenv() {
+    
 }
 
 export -f write_header

@@ -10,8 +10,7 @@ import json
 import threading
 import datetime
 
-from blog_series import BlogSeries
-from blog import Blog
+from blogs import BlogSeries, Blog
 
 def get_default_blogs_path():
     return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "blogs"))

@@ -1,6 +1,8 @@
 from typing import Any
 import os, sys
 import json
+import functools
+
 class Blog(object):
     def __init__(self, **kwargs) -> None:
         self.properties = {}
@@ -10,15 +12,21 @@ class Blog(object):
 
     @property.getter
     def blog_name(self):
-        return 
+        return self.name
     
     @property.getter
     def blog_slug(self):
-        return
+        return self.slug
 
     @property.getter
-    def blog_description():
-        return
+    def blog_description(self):
+        return self.description
+    
+    @property.getter
+    def blog_series(self):
+        if not hasattr(self, "series"):
+            return None
+        return None
 
     def __getattribute__(self, __name: str) -> Any:
         return super().__getattribute__(__name)
@@ -28,9 +36,6 @@ class Blog(object):
 
     def __getitem__(self, key):
         return self.__dict__[key]
-    
-    def get_blog_series():
-        return
     
     @classmethod
     def load_blog(cls, blog_path):
@@ -60,6 +65,6 @@ class Blog(object):
         
         loaded_metadata = json.loads(blog_metadata)
         if loaded_metadata is None:
-            raise ValueError("")
+            raise ValueError("The loaded metadata is invalid or null")
         
-        return cls(loaded_metadata)
+        return cls(**loaded_metadata)

@@ -5,6 +5,23 @@ class BlogSeries(object):
         for key in kwargs:
             self.__dict__[key] = kwargs[key]
         super().__init__()
+        
+    @property.getter
+    def blog_series_name(self):
+        return self.name
+    @property.getter
+    def blog_series_slug(self):
+        return self.name
+    
+    
+    @property.getter
+    def blog_series_description(self):
+        return self.description
+    @property.getter
+    def blog_series_summary(self):
+        return self.summary
+
+        
 
     @classmethod
     def get_blog_series(cls, blogs_path):
