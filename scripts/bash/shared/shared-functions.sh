@@ -30,11 +30,19 @@ is_command_available() {
 }
 
 is_python_available() {
-    return is_command_available "python"
+    if is_command_available "python"; then
+        return 0
+    fi
+
+    return 1
 }
 
 is_pyenv_available() {
-    return is_command_available "pyenv"
+    if is_command_available "pyenv"; then
+        return 0
+    fi
+
+    return 1
 }
 
 is_pyenv_python_version_supported() {
@@ -119,7 +127,7 @@ is_virtualenv_available() {
 }
 
 create_virtualenv() {
-    
+    python -m venv $1    
 }
 
 export -f write_header

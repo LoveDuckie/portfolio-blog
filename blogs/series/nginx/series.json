@@ -1,4 +1,4 @@
 {
     "title": "Configuring NGINX for Docker with Alpine Linux",
-    "description": "A blog series providing tutorials and tips for configuring or extending your Alpine Linux Docker container image for NGINX."
+    "description": "A blog collection providing tutorials and tips for configuring or extending your Alpine Linux Docker container image for NGINX."
 }

@@ -2,6 +2,7 @@ from typing import Any
 import os, sys
 import json
 import functools
+import inspect
 
 class Blog(object):
     def __init__(self, **kwargs) -> None:
@@ -23,8 +24,8 @@ class Blog(object):
         return self.description
     
     @property.getter
-    def blog_series(self):
-        if not hasattr(self, "series"):
+    def blog_collection(self):
+        if not hasattr(self, "collection"):
             return None
         return None
 
@@ -64,7 +65,11 @@ class Blog(object):
             raise ValueError("The loaded metadata is invalid or null")
         
         loaded_metadata = json.loads(blog_metadata)
+        
         if loaded_metadata is None:
             raise ValueError("The loaded metadata is invalid or null")
+        
+        if not isinstance(loaded_metadata, dict):
+            raise TypeError(f'The loaded metadata was not a dictionary.')
         
         return cls(**loaded_metadata)

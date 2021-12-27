@@ -33,7 +33,7 @@ is_valid_blog() {
 
 usage() {
    write_info "publish" "usage - publish"
-   write_info "publish" "./publish.sh [-b <blog slug name>] [-s <blog series name>]"
+   write_info "publish" "./publish.sh [-b <blog slug name>] [-s <blog collection name>]"
    exit 0
 }
 
@@ -44,7 +44,7 @@ while getopts ':b:h?' opt; do
       write_warning "publish" "publishing \"$BLOG_SLUG_NAME\""
       ;;
    s)
-      BLOG_SERIES_SLUG_NAME=$OPTARG
+      BLOG_collection_SLUG_NAME=$OPTARG
       write_warning "publish" "publishing \"$BLOG_SLUG_NAME\""
       ;;
    h | ?)

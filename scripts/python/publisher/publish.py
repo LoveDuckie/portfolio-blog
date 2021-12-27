@@ -10,13 +10,13 @@ import json
 import threading
 import datetime
 
-from blogs import BlogSeries, Blog
+from blogs import BlogCollection, Blog
 
 def get_default_blogs_path():
     return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "blogs"))
 
-def get_default_blog_series_path():
-    return os.path.abspath(os.path.join(get_default_blogs_path(), "series"))
+def get_default_blog_collection_path():
+    return os.path.abspath(os.path.join(get_default_blogs_path(), "collection"))
 
 def get_default_export_path():
     return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "exported"))
@@ -35,21 +35,41 @@ def get_formatted_timestamp():
     return today_date
 
 def get_default_logs_path_name():
-    return "logs"
+    return get_default_logs_path_name()s"
+
+def get_default_exporters():
+    """
+    Get a list of default exporters to use
+
+    Returns:
+        list: A list of exporters to use
+    """
+    return [ "silverstripe", "packaged" ]
 
 def get_log_filename():
+    """
+    Get the default filename for the log file
+
+    Raises:
+        ValueError: If the formatted timestamp that is returned is considered invalid
+
+    Returns:
+        str: The name of the log file to use by default.
+    """
     formatted_timestamp = get_formatted_timestamp()
     if formatted_timestamp is None or formatted_timestamp == '':
         raise ValueError("The formatted timestamp is invalid or null")
     return f'publish-log-{get_formatted_timestamp()}.log'
 
 def get_default_log_filepath():
-    logs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "logs"))
+    logs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), get_default_logs_path_name()))
+    
     if logs_path is None or logs_path == '':
         raise ValueError("The logs path is invalid or null")
+    
     return os.path.join(logs_path, get_log_filename())
 
-arg_parser = argparse.ArgumentParser(description='Publish or export blogs')
+arg_parser = argparse.ArgumentParser(description='Publish')
 
 # Publish
 arg_parser_group_publish = arg_parser.add_argument_group("Publish")
@@ -58,13 +78,14 @@ arg_parser_group_publish.add_argument('--publisher', dest='publishers', type=str
 # Export
 arg_parser_group_export = arg_parser.add_argument_group("Export")
 arg_parser_group_export.add_argument('--export-path', type=str, help='The absolute path for exported blogs (HTML format).', required=False, default=get_default_export_path())
+arg_parser_group_export.add_argument('--exporters', dest='exporters', type=str, action='append', help='The list of exporters to use for writing out the blogs.', required=False, default=None)
 
 # Create
 arg_parser_group_create = arg_parser.add_argument_group("Create")
 arg_parser_group_create.add_argument('--blog-name', type=str, help='The name of the blog to create', default=None, required=True)
-arg_parser_group_create.add_argument('--blog-series-name', type=str, help='The name of the blog series', default='default', required=False)
+arg_parser_group_create.add_argument('--blog-collection-name', type=str, help='The name of the blog collection', default='default', required=False)
 
-arg_parser.add_argument('--blog-series', dest='blog_series', type=str, help='The slug name for the blog series', required=False, default=None)
+arg_parser.add_argument('--blog-collection', dest='blog_collection', type=str, help='The slug name for the blog collection', required=False, default=None)
 arg_parser.add_argument('--blog', dest='blog', type=str, help='The specific blog we wish to interact with', required=False, default=None)
 arg_parser.add_argument('--blogs-path', dest='blogs_path', type=str, required=False, help='The relative or absolute path to where the blogs are located', default=get_default_blogs_path())
 arg_parser.add_argument('--debug', dest='debug', required=False, type=bool, help='Enable debugging.', default=False)
@@ -89,7 +110,7 @@ class ExportThread(threading.Thread):
 if parsed_args.debug:
     logger.setLevel(logging.DEBUG)
 
-def list_all_blogs(blog_series_name = ""):
+def list_all_blogs(blog_collection_name = ""):
     if parsed_args is None:
         raise Exception("The parsed arguments are invalid or null")
     
@@ -105,20 +126,30 @@ def list_all_blogs(blog_series_name = ""):
     
     return paths
 
-def is_valid_blog_series(blog_series_slug_name):
-    if blog_series_slug_name is None or blog_series_slug_name == '':
-        raise ValueError("The blog series slug name is invalid or null")
+def is_valid_blog_collection(blog_collection_slug_name):
+    if blog_collection_slug_name is None or blog_collection_slug_name == '':
+        raise ValueError("The blog collection slug name is invalid or null")
     
-    blog_series_root_path = get_blog_series_root_path()
-    if blog_series_root_path is None or blog_series_root_path == '':
-        raise ValueError("")
+    blog_collection_root_path = get_blog_collections_root_path()
+    if blog_collection_root_path is None or blog_collection_root_path == '':
+        raise ValueError("The blog collection root paht is invalid or null")
+    if not os.path.exists(blog_collection_root_path):
+        raise IOError(f'The path \"{blog_collection_root_path}\" was not found.')
     
     return
 
-def is_valid_blog(blog_slug_name, blog_series_slug_name = "default"):
+def is_valid_blog(blog_slug_name, blog_collection_slug_name = "default"):
+    if blog_slug_name is None:
+        raise ValueError("The blog slug name is invalid or null")
+        
+    if not is_valid_blog_collection(blog_collection_slug_name):
+        raise Exception("")
+    
+    blog_collections_root = get_blog_collections_root_path()
+    
     return
 
-def list_all_series():
+def list_all_collection():
     if parsed_args is None:
         raise Exception("The parsed arguments are null or invalid")
     
@@ -126,7 +157,7 @@ def list_all_series():
 
 def publish_blog():
     blog_name = parsed_args.blog_name
-    blog_series = parsed_args.blog_series
+    blog_collection = parsed_args.blog_collection
     
     if parsed_args is None:
         raise ValueError("The parsed command-line arguments are invalid or null")
@@ -142,24 +173,24 @@ def publish_blog():
     
     return
 
-def get_all_blog_series():
+def get_all_blog_collection():
     blogs_path = parsed_args.blogs_path
     
     for blog_path in os.listdir(blogs_path):
         continue
     return
 
-def create_blog(blog_name, blog_series_name='default'):
+def create_blog(blog_name, blog_collection_name='default'):
     if blog_name is None or blog_name == '':
         raise ValueError("The blog name is invalid or null")
-    if blog_series_name is None or blog_series_name == '':
+    if blog_collection_name is None or blog_collection_name == '':
         raise ValueError("The blog name is invalid or null")
     
     blog_slug_name = create_slug_from_name(blog_name)
     if blog_slug_name is None or blog_slug_name == '':
         raise ValueError("The blog slug name is invalid or null")
 
-def export_blog(blog_name, blog_series_name='default'):
+def export_blog(blog_name, blog_collection_name='default'):
     if parsed_args is None:
         raise ValueError("The parsed arguments are invalid or null")
     
@@ -168,44 +199,44 @@ def export_blog(blog_name, blog_series_name='default'):
     
     return
 
-def get_blog_series_root_path():
+def get_blog_collections_root_path():
     if parsed_args is None:
         raise ValueError("The parsed arguments are invalid.")
     
     if parsed_args.blogs_path is None:
         raise ValueError("The blogs path specified is invalid or null.")
     
-    blog_series_root_path = os.path.join(parsed_args.blogs_path, "series")
+    blog_collection_root_path = os.path.join(parsed_args.blogs_path, "collection")
     
-    if blog_series_root_path is None or blog_series_root_path == "":
-        raise ValueError("The blog series path is invalid or null.")
+    if blog_collection_root_path is None or blog_collection_root_path == "":
+        raise ValueError("The blog collection path is invalid or null.")
     
-    return blog_series_root_path
+    return blog_collection_root_path
 
-def get_blog_series_path(blog_series_name):
-    if blog_series_name is None or blog_series_name == '':
-        raise ValueError("The blog series name is invalid or null")
+def get_blog_collection_path(blog_collection_name):
+    if blog_collection_name is None or blog_collection_name == '':
+        raise ValueError("The blog collection name is invalid or null")
     
-    blogs_series_root_path = get_blog_series_root_path()
-    if blogs_series_root_path is None or blogs_series_root_path == '':
-        raise ValueError("The blog series path is invalid or null")
+    blogs_collection_root_path = get_blog_collections_root_path()
+    if blogs_collection_root_path is None or blogs_collection_root_path == '':
+        raise ValueError("The blog collection path is invalid or null")
     
-    slug_name = create_slug_from_name(blog_series_name)
-    blog_series_path = os.path.join(blogs_series_root_path, slug_name)
-    if blog_series_path is None or blog_series_path == '':
-        raise ValueError("The blog series path is invalid or null")
+    slug_name = create_slug_from_name(blog_collection_name)
+    blog_collection_path = os.path.join(blogs_collection_root_path, slug_name)
+    if blog_collection_path is None or blog_collection_path == '':
+        raise ValueError("The blog collection path is invalid or null")
     
-    return blog_series_path
+    return blog_collection_path
 
-def get_blog_series_metadata(blog_series_name):
-    blog_series_metadata_filepath = os.path.join(get_blog_series_path(blog_series_name), "series.json")
+def get_blog_collection_metadata(blog_collection_name):
+    blog_collection_metadata_filepath = os.path.join(get_blog_collection_path(blog_collection_name), "collection.json")
     
-    if not os.path.exists(blog_series_metadata_filepath):
-        raise FileExistsError(f'Failed to find the file \"{blog_series_metadata_filepath}\"')
+    if not os.path.exists(blog_collection_metadata_filepath):
+        raise FileExistsError(f'Failed to find the file \"{blog_collection_metadata_filepath}\"')
     
     metadata = None
     
-    with open(blog_series_metadata_filepath, 'r') as file:
+    with open(blog_collection_metadata_filepath, 'r') as file:
         metadata = file.read()
         
     if metadata is None:
@@ -214,9 +245,9 @@ def get_blog_series_metadata(blog_series_name):
     loaded_data = json.loads(metadata)
     return loaded_data    
 
-def get_all_blogs_from_series(blog_series_slug_name):
-    if blog_series_slug_name is None or blog_series_slug_name == '':
-        raise ValueError("The blog series name specified is invalid or null")
+def get_all_blogs_from_collection(blog_collection_slug_name):
+    if blog_collection_slug_name is None or blog_collection_slug_name == '':
+        raise ValueError("The blog collection name specified is invalid or null")
 
     return
 

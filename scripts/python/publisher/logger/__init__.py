@@ -1,1 +1,2 @@
-import publish_logger as logger
+from publish_logger import get_logger
+

@@ -6,8 +6,8 @@
             ""
         ]   
     },
-    "Portfolio-Blog-Series" :{
-        "prefix": "blogseries",
+    "Portfolio-Blog-collection" :{
+        "prefix": "BlogCollection",
         "description": "",
         "body": [
             ""

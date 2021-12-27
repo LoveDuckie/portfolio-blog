@@ -1,6 +1,6 @@
 # Overview
 
-This is a multiple part blog series outlining some tips and best practices for setting up, configuring, and provisioning your installation of WSL2. If you haven't done so already, you're going to want to start by reading [@yosracodes](https://twitter.com/yosracodes) blog here on provisioning your machine, and installing WSL2.
+This is a multiple part blog collection outlining some tips and best practices for setting up, configuring, and provisioning your installation of WSL2. If you haven't done so already, you're going to want to start by reading [@yosracodes](https://twitter.com/yosracodes) blog here on provisioning your machine, and installing WSL2.
 
 ## Configuring WSL
 

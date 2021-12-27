@@ -1,5 +1,5 @@
 {
-    "title": "extending-startup-processes",
+    "title": "Extending Startup Processes",
     "slug" : "extending-startup-processes",
-    "summary": ""
+    "summary": "How to extend the startup processes in the NGINX Docker container image."
 }

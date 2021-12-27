@@ -23,13 +23,13 @@ A repository for all the articles that end up published on my blog, written in m
 │   │   ├── dynamically-serving-webp-images
 │   │   ├── extending-startup-processes
 │   │   ├── self-signed-ssl-certificates-for-development-purposes
-│   │   ├── series.json
+│   │   ├── collection.json
 │   │   ├── tips-and-tricks-for-improving-security
 │   │   └── using-gzip-compression-for-static-assets
 │   └── wsl
 │       ├── configuring-wsl-for-ssh
 │       ├── getting-started-with-wsl
-│       ├── series.json
+│       ├── collection.json
 │       ├── setup-nvm
 │       └── setup-pyenv
 ├── images

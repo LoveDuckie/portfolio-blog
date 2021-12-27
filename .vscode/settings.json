@@ -1,3 +1,4 @@
 {
-    "python.defaultInterpreterPath": "${workspaceFolder}\\scripts\\python\\publisher\\venv\\Scripts\\python.exe"
+    "python.defaultInterpreterPath": "${workspaceFolder}\\scripts\\python\\publisher\\venv\\Scripts\\python.exe",
+    "autoDocstring.startOnNewLine": true
 }

@@ -19,6 +19,16 @@ usage() {
     exit 1
 }
 
+if ! is_pyenv_available; then
+    write_error "setup" "pyenv is not available from the command-line"
+    exit 1
+fi
+
+if ! is_python_available; then
+    write_error "setup" "python is not available from the command-line, or installed."
+    exit 1
+fi
+
 while getopts ':t:h?' opt; do
    case $opt in
         t)
@@ -39,3 +49,13 @@ while getopts ':t:h?' opt; do
    esac
 done
 
+if [ -z $TARGET_PATH ]; then
+    write_warning "setup" "target path for the virtual environment not defined. using \"$CURRENT_SCRIPT_DIRECTORY/venv\""
+    TARGET_PATH=$CURRENT_SCRIPT_DIRECTORY/venv
+fi
+
+if ! is_virtualenv_available; then
+    if ! create_virtualenv $TARGET_PATH; then
+        write_error "setup" "failed to create the virtualenv"
+    fi
+fi

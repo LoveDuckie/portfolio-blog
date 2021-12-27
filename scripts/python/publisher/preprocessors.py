@@ -10,5 +10,5 @@ class CodeblockProcessor(inlinepatterns.InlineProcessor):
 
 class CodeblockExtension(Extension):
     def extendMarkdown(self, md):
-        DEL_PATTERN = r'```[a-zA-Z]+(.*?)```'  # like --del--
-        md.inlinePatterns.register(CodeblockProcessor(DEL_PATTERN, md), 'del', 175)
+        CODE_BLOCK_PATTERN = r'```[a-zA-Z]+(.*?)```'  # like --del--
+        md.inlinePatterns.register(CodeblockProcessor(CODE_BLOCK_PATTERN, md), 'del', 175)
