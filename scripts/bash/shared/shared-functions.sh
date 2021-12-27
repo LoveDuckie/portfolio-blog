@@ -13,14 +13,6 @@ export SHARED_SCRIPTS_PATH=$(realpath ${SHARED_SCRIPTS_PATH:-$CURRENT_SCRIPT_DIR
 export REPO_ROOT_PATH=${REPO_ROOT_PATH:-$(realpath $SHARED_SCRIPTS_PATH/../../)}
 source "$SHARED_SCRIPTS_PATH/shared-variables.sh"
 
-is_docker_installed() {
-    if [ -z "$(command -v docker)" ]; then
-        return 1
-    fi
-
-    return 0
-}
-
 is_running_as_root() {
     if [ $(whoami) != 'root' ]; then
         return 0
@@ -32,9 +24,21 @@ is_running_as_root() {
 is_command_available() {
     if [ -z "$(command -v $1)" ]; then
         return 1
-    else
-        return 0
     fi
+
+    return 0
+}
+
+is_python_available() {
+    return is_command_available "python"
+}
+
+is_pyenv_available() {
+    return is_command_available "pyenv"
+}
+
+is_pyenv_installed() {
+    return [ -d ~/.pyenv ]
 }
 
 write_header() {
@@ -81,20 +85,6 @@ write_response() {
     return 0
 }
 
-is_valid_project() {
-    if [ -z "$1" ]; then
-        write_error "shared-functions" "the name of the project was not defined."
-        return 1
-    fi
-
-    if [ ! -d $LOCAL_DOCKER_PATH/projects/$1 ]; then
-        write_error "shared-functions" "failed to find \"$1\""
-        return 1
-    fi
-
-    return 0
-}
-
 is_package_installed() {
     if [ -z "$1" ]; then
         write_error "shared-functions" "the name of the ubuntu package was not defined."
@@ -109,26 +99,13 @@ is_package_installed() {
     return 1
 }
 
-is_valid_docker_context() {
-    if [ -z "$1" ]; then
-        write_error "shared-functions" "the docker context was not defined. unable to check."
-        return 1
-    fi
-
-    local DOCKER_CONTEXT_NAME=${1%%.*}
-
-    write_info "shared-functions" "checking docker context \"${1}\""
-    docker context inspect $DOCKER_CONTEXT_NAME >/dev/null 2>&1
-    if ! write_response "check docker context \"${1}\""; then
-        return 1
-    fi
-
-    return 0
-}
-
+export -f write_header
 export -f write_info
 export -f write_warning
 export -f write_error
 export -f write_response
-export -f is_valid_docker_context
 export -f is_package_installed
+export -f is_command_available
+export -f is_pyenv_available
+export -f is_pyenv_installed
+export -f is_python_available
