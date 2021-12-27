@@ -1,12 +1,13 @@
 import os, sys
+
 class BlogSeries(object):
     def __init__(self, **kwargs) -> None:
         for key in kwargs:
-            value = kwargs[key]
+            self.__dict__[key] = kwargs[key]
         super().__init__()
 
     @classmethod
-    def get_series(cls, blogs_path):
+    def get_blog_series(cls, blogs_path):
         if blogs_path is None or blogs_path == '':
             raise ValueError("The blogs path was nto defined")
         

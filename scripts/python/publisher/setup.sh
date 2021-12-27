@@ -13,6 +13,11 @@ export CURRENT_SCRIPT_FILENAME_BASE=${CURRENT_SCRIPT_FILENAME%.*}
 source "$SHARED_SCRIPTS_PATH/shared-functions.sh"
 write_header
 
+usage() {
+    write_info "setup" "usage - setup"
+    write_info "setup" "./setup.sh [-t <target path>] [-h]"
+}
+
 while getopts ':t:h?' opt; do
    case $opt in
         t)
@@ -23,6 +28,10 @@ while getopts ':t:h?' opt; do
             usage
         ;;
         :)
+            write_error "setup" "-${OPTARG} requires an argument"
+            usage
+        ;;
+        *)
             write_error "setup" "-${OPTARG} requires an argument"
             usage
         ;;

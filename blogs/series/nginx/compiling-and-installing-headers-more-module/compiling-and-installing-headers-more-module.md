@@ -17,11 +17,9 @@ Your `docker-compose` project is going to need to look a little like this.
 │       ├── build
 │       │   └── Dockerfile
 │       ├── configuration
-│       │   ├── certificates
 │       │   ├── default
 │       │   ├── environments
 │       │   ├── nginx.conf
-│       │   ├── robots.txt
 │       │   ├── snippets
 │       │   └── templates
 │       ├── pages
