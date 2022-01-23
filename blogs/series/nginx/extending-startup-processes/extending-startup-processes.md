@@ -57,3 +57,9 @@ These scripts will be executed by another script that will be placed in the orig
 
 
 ```
+
+---
+
+I hope you found this blog post useful! Let me know if you think there should be improvements by opening an issue on GitHub.
+
+ **Follow me on Twitter:** [@TheLoveDuckie](https://twitter.com/theloveduckie)

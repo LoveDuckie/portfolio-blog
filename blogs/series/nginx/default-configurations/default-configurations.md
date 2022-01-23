@@ -16,6 +16,8 @@ Failing to address the aforementioned problem can cause for your SEO ranking to 
 
 ## Project Layout
 
+Find below the directory layout of the `docker-compose` project.
+
 ```shell
 .
 ├── containers
@@ -53,7 +55,9 @@ This section outlines potential ideas for a suitable default configuration
 
 ### Error Pages
 
-Serving error pages.
+In the event that a page or a request cannot be served, you will want to ensure that NGINX responds with a suitable error page, and use a generic fallback page if none is configured for a specific HTTP status code.
+
+- [Read more information here about HTTP status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
 
 ### Notes
 
@@ -107,3 +111,9 @@ server
     }
 }
 ```
+
+---
+
+I hope you found this blog post useful! Let me know if you think there should be improvements by opening an issue on GitHub.
+
+ **Follow me on Twitter:** [@TheLoveDuckie](https://twitter.com/theloveduckie)

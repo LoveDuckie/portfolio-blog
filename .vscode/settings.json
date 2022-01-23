@@ -1,4 +1,9 @@
 {
     "python.defaultInterpreterPath": "${workspaceFolder}\\scripts\\python\\publisher\\venv\\Scripts\\python.exe",
-    "autoDocstring.startOnNewLine": true
+    "autoDocstring.startOnNewLine": true,
+    "files.associations": {
+        "*.md": "markdown",
+        "*.markdown": "markdown"
+    },
+    "[markdown]": { "editor.quickSuggestions": true }
 }

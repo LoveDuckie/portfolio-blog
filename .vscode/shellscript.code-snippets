@@ -2,6 +2,7 @@
     "Portfolio-Script-Header" :
     {
         "prefix": "scriptheader",
+        "scope": "shellscript",
         "description": "The default declarations for all scripts that use shared functions.",
         "body": [
             "#!/bin/bash",
@@ -22,7 +23,8 @@
     },
     "Portfolio-Script-Options" :
     {
-        "prefix": "scriptoptions",  
+        "prefix": "scriptoptions",
+        "scope": "shellscript", 
         "body": [
             "while getopts ':$1h?' opt; do",
             "   case \\$opt in",
@@ -43,6 +45,7 @@
     "Portfolio-Write-Response" :
     {
         "prefix": "wr",
+        "scope": "shellscript",
         "description": "",
         "body": [
             "write_response \"${TM_FILENAME_BASE/(.*)/${1:/downcase}/}\" \"$1\""
@@ -51,6 +54,7 @@
     "Portfolio-Write-Info" :
     {
         "prefix": "wi",
+        "scope": "shellscript",
         "description": "",
         "body": [
             "write_info \"${TM_FILENAME_BASE/(.*)/${1:/downcase}/}\" \"$1\""
@@ -59,6 +63,7 @@
     "Portfolio-Write-Error" :
     {
         "prefix": "we",
+        "scope": "shellscript",
         "description": "",
         "body": [
             "write_error \"${TM_FILENAME_BASE/(.*)/${1:/downcase}/}\" \"$1\""
@@ -67,6 +72,7 @@
     "Portfolio-Write-Success" :
     {
         "prefix": "ws",
+        "scope": "shellscript",
         "description": "",
         "body": [
             "write_success \"${TM_FILENAME_BASE/(.*)/${1:/downcase}/}\" \"$1\""
@@ -75,6 +81,7 @@
     "Portfolio-Write-Warning" :
     {
         "prefix": "ww",
+        "scope": "shellscript",
         "description": "",
         "body": [
             "write_warning \"${TM_FILENAME_BASE/(.*)/${1:/downcase}/}\" \"$1\""
@@ -83,6 +90,7 @@
     "Portfolio-Null-Check" :
     {
         "prefix": "null",
+        "scope": "shellscript",
         "description": "A simple null check",
         "body": [
             "if [ -z \"$1\" ]; then",
