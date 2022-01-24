@@ -49,6 +49,8 @@ There are a few variants of the NGINX Docker container image, depending on which
 
 We will focus on compiling the module from source using a separate build stage for achieving this. Upon compiling the module in this build stage, we will then copy the compiled contents into the latter parts of the build.
 
+[The repository for the headers-more module for NGINX can be found on GitHub here.](https://github.com/openresty/headers-more-nginx-module).
+
 ```Dockerfile
 ARG NGINX_VERSION 1.20.1
 ARG NGINX_HEADERS_MORE_VERSION 0.33
