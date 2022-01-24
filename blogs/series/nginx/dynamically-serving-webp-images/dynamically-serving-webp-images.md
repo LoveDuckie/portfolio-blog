@@ -44,9 +44,9 @@ Click here to view the repository for this automated tooling, along with require
 
 What this configuration does instead the following
 
-1. Detect any incoming requests for a static file asset with a .jpeg, .jpg, .gif, or .png extension.
-2. Modify the response, and append the .webp file extension to the request string.
-3. Attempt to serve the .webp version of the requested image asset. Return the original if it is not found (Refer: `try_files`).
+1. Detect any incoming requests for a static file asset with a `.jpeg`, `.jpg`, `.gif`, or `.png` extension.
+2. Modify the response, and append the `.webp` file extension to the request string.
+3. Attempt to serve the `.webp` version of the requested image asset. Return the original if it is not found (Refer: `try_files`).
 
 To achieve this, we must use a feature in NGINX called the `map` operator, which is a operator used within configuration files for defining variables based on the value of another variable.
 
