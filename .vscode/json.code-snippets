@@ -1,16 +1,21 @@
 {
-    "Portfolio-Blog" :{
+    "Portfolio-Blog-Json" :{
         "prefix": "blog",
         "description": "",
         "body": [
-            ""
+            "{",
+                "\"title\": \"${1}\"",
+                "\"slug\": \"getting-started-with-bash\"",
+                "\"summary\": \"\"",
+                "\"description\": \"\"",
+            "}"
         ]   
     },
-    "Portfolio-Blog-collection" :{
+    "Portfolio-Blog-Collection-Json" :{
         "prefix": "BlogCollection",
         "description": "",
         "body": [
-            ""
+""
         ]   
     }
 }

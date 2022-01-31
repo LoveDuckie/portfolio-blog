@@ -249,7 +249,7 @@ def get_all_blogs_from_collection(blog_collection_slug_name):
     if blog_collection_slug_name is None or blog_collection_slug_name == '':
         raise ValueError("The blog collection name specified is invalid or null")
 
-    return
+    return ""
 
 def main(args):
     return
