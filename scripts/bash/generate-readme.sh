@@ -14,6 +14,8 @@ source "$SHARED_SCRIPTS_PATH/shared-functions.sh"
 write_header
 
 usage() {
+    write_info "generate-readme" "usage - generate-readme"
+    write_info "generate-readme" "./generate-readme.sh [-h or -?]"
     exit 1
 }
 
@@ -28,6 +30,10 @@ while getopts ':gh?' opt; do
         ;;
     :)
         write_error "generate-readme" "-${OPTARG} requires an argument"
+        usage
+        ;;
+    *)
+        write_error "generate-readme" "-${OPTARG} argument is not recognised"
         usage
         ;;
     esac

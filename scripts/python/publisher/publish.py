@@ -31,11 +31,11 @@ def create_slug_from_name(blog_name):
     return formatted.lower()
 
 def get_formatted_timestamp():
-    today_date = datetime.datetime.strftime(datetime.datetime.now, '%d-%m-%y_%H-%M-%S')
+    today_date = datetime.datetime.strftime(datetime.datetime.now(), '%d-%m-%y_%H-%M-%S')
     return today_date
 
 def get_default_logs_path_name():
-    return get_default_logs_path_name()s"
+    return get_default_logs_path_name()
 
 def get_default_exporters():
     """

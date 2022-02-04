@@ -14,20 +14,24 @@ source "$SHARED_SCRIPTS_PATH/shared.sh"
 write_header
 
 usage() {
-   write_info "export-requirements" ""
+   write_info "export-requirements" "usage - export-requirements"
 }
 
 while getopts ':t:h?' opt; do
    case $opt in
    t)
-      TARGET_PATH=
-      
+      TARGET_PATH=$OPTARG
+      write_info "export-requirements" "using export path \"$TARGET_PATH\""
       ;;
    h | ?)
       usage
       ;;
    :)
       write_error "export-requirements" "-${OPTARG} requires an argument"
+      usage
+      ;;
+   *)
+      write_error "export-requirements" "-${OPTARG} argument is not required"
       usage
       ;;
    esac
