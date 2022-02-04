@@ -17,33 +17,39 @@ A repository for all the articles that end up published on my blog, written in m
 .
 ├── README.md
 ├── blogs
-│   ├── nginx
-│   │   ├── compiling-and-installing-headers-more-module
-│   │   ├── default-configurations
-│   │   ├── dynamically-serving-webp-images
-│   │   ├── extending-startup-processes
-│   │   ├── self-signed-ssl-certificates-for-development-purposes
-│   │   ├── collection.json
-│   │   ├── tips-and-tricks-for-improving-security
-│   │   └── using-gzip-compression-for-static-assets
-│   └── wsl
-│       ├── configuring-wsl-for-ssh
-│       ├── getting-started-with-wsl
-│       ├── collection.json
-│       ├── setup-nvm
-│       └── setup-pyenv
-├── images
-│   ├── portfolio-blog-capture.png
-│   └── portfolio-blog-header.png
-├── schemas
-│   └── README.md
-└── scripts
-    ├── README.md
-    ├── bash
-    │   ├── publish.sh
-    │   └── shared
-    └── python
-        └── publisher
+│   ├── collections
+│   │   ├── nginx
+│   │   │   ├── collection.json
+│   │   │   ├── compiling-and-installing-headers-more-module
+│   │   │   ├── default-configurations
+│   │   │   ├── dynamically-serving-webp-images
+│   │   │   ├── extending-startup-processes
+│   │   │   ├── self-signed-ssl-certificates-for-development-purposes
+│   │   │   ├── tips-and-tricks-for-improving-security
+│   │   │   └── using-gzip-compression-for-static-assets
+│   │   ├── php-and-silverstripe
+│   │   │   └── collection.json
+│   │   ├── seo
+│   │   │   ├── collection.json
+│   │   │   └── using-json-ld-structured-data
+│   │   ├── shell-scripting
+│   │   │   ├── getting-started-with-bash
+│   │   │   ├── remote-shell-scripts-over-ssh
+│   │   │   └── writing-shared-scripts
+│   │   ├── ssh
+│   │   │   ├── collection.json
+│   │   │   ├── configuring-key-based-authentication-with-ssh
+│   │   │   └── security-best-practices
+│   │   └── wsl
+│   │       ├── collection.json
+│   │       ├── configuring-wsl-for-ssh
+│   │       ├── getting-started-with-wsl
+│   │       ├── setup-nvm
+│   │       └── setup-pyenv
+│   └── default
+└── images
+    ├── portfolio-blog-capture.png
+    └── portfolio-blog-header.png
 ```
 
 ## Requests
