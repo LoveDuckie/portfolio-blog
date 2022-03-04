@@ -1,21 +1,28 @@
 {
     "Portfolio-Blog-Json" :{
         "prefix": "blog",
-        "description": "",
+        "scope": "json",
+        "description": "Metadata for blog.",
         "body": [
             "{",
                 "\"title\": \"${1}\"",
-                "\"slug\": \"getting-started-with-bash\"",
-                "\"summary\": \"\"",
-                "\"description\": \"\"",
+                "\"slug\": \"${2}\"",
+                "\"summary\": \"${3}\"",
+                "\"description\": \"${4}\"",
             "}"
         ]   
     },
     "Portfolio-Blog-Collection-Json" :{
         "prefix": "BlogCollection",
-        "description": "",
+        "description": "Metadata for blog collections.",
+        "scope": "json",
         "body": [
-""
+            "{",
+                "\"title\": \"${1}\"",
+                "\"slug\": \"${2}\"",
+                "\"summary\": \"${3}\"",
+                "\"description\": \"${4}\"",
+            "}"
         ]   
     }
 }
