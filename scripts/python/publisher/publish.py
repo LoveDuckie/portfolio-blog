@@ -9,19 +9,11 @@ import re
 import json
 import threading
 import datetime
+from typing import List
 
 from blogs import BlogCollection, Blog
 
-def get_default_blogs_path():
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "blogs"))
-
-def get_default_blog_collection_path():
-    return os.path.abspath(os.path.join(get_default_blogs_path(), "collection"))
-
-def get_default_export_path():
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "exported"))
-
-def create_slug_from_name(blog_name):
+def create_slug_from_name(blog_name: str):
     if blog_name is None or blog_name == '':
         raise ValueError("The blog name defined is invalid or null")
     
@@ -30,14 +22,14 @@ def create_slug_from_name(blog_name):
         raise ValueError("The formatted slug name is invalid or null")
     return formatted.lower()
 
-def get_formatted_timestamp():
+def get_formatted_timestamp() -> str:
     today_date = datetime.datetime.strftime(datetime.datetime.now(), '%d-%m-%y_%H-%M-%S')
     return today_date
 
-def get_default_logs_path_name():
+def get_default_logs_path_name() -> str:
     return get_default_logs_path_name()
 
-def get_default_exporters():
+def get_default_exporters() -> List[str]:
     """
     Get a list of default exporters to use
 
@@ -46,7 +38,7 @@ def get_default_exporters():
     """
     return [ "silverstripe", "packaged" ]
 
-def get_log_filename():
+def get_log_filename() -> str:
     """
     Get the default filename for the log file
 

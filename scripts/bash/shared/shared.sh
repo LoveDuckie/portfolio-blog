@@ -3,7 +3,7 @@
 
     Portfolio \ Shared Functions
 
-    A collection of shared functions used in various places.
+    A collection of shared utility functions used for various purposes.
 
 EOF
 [ -n "${SHARED_ALL}" ] && return
@@ -13,3 +13,4 @@ export SHARED_SCRIPTS_PATH=$(realpath ${SHARED_SCRIPTS_PATH:-$CURRENT_SCRIPT_DIR
 export REPO_ROOT_PATH=${REPO_ROOT_PATH:-$(realpath $SHARED_SCRIPTS_PATH/../../)}
 source "$SHARED_SCRIPTS_PATH/shared-variables.sh"
 source "$SHARED_SCRIPTS_PATH/shared-functions.sh"
+source "$SHARED_SCRIPTS_PATH/shared-functions-python.sh"

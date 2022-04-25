@@ -29,11 +29,11 @@ while getopts ':gh?' opt; do
         usage
         ;;
     :)
-        write_error "generate-readme" "-${OPTARG} requires an argument"
+        write_error "generate-readme" "\"-${OPTARG}\" requires an argument"
         usage
         ;;
     *)
-        write_error "generate-readme" "-${OPTARG} argument is not recognised"
+        write_error "generate-readme" "\"-${OPTARG}\" argument is not recognised"
         usage
         ;;
     esac
@@ -43,5 +43,7 @@ write_info "generate-readme" "generating the filesystem tree"
 $CURRENT_SCRIPT_DIRECTORY/generate-tree.sh
 if write_response "generate-readme" "generate tree documentation"; then
     write_error "generate-readme" "failed to generate tree documentation"
-    exit 1
+    exit 2
 fi
+
+write_success "generate-readme" "done"

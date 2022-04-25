@@ -27,11 +27,11 @@ while getopts ':t:h?' opt; do
       usage
       ;;
    :)
-      write_error "export-requirements" "-${OPTARG} requires an argument"
+      write_error "export-requirements" "\"-${OPTARG}\" requires an argument"
       usage
       ;;
    *)
-      write_error "export-requirements" "-${OPTARG} argument is not required"
+      write_error "export-requirements" "\"-${OPTARG}\" argument is not required"
       usage
       ;;
    esac

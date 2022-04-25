@@ -29,37 +29,6 @@ is_command_available() {
     return 0
 }
 
-is_python_available() {
-    if is_command_available "python"; then
-        return 0
-    fi
-
-    return 1
-}
-
-is_pyenv_available() {
-    if is_command_available "pyenv"; then
-        return 0
-    fi
-
-    return 1
-}
-
-is_pyenv_python_version_supported() {
-    if ! is_pyenv_installed; then
-        return 1
-    fi
-    PYENV_PYTHON_VERSION=$(pyenv global)
-    if [ -z $PYENV_PYTHON_VERSION ]; then
-        write_error "shared-functions" "pyenv python version was not discovered."
-        return 2
-    fi
-}
-
-is_pyenv_installed() {
-    return [ -d ~/.pyenv ]
-}
-
 write_header() {
     if [ -z "$HEADER_OUTPUT" ] && [ -e "$SHARED_SCRIPTS_PATH/script-header" ]; then
         echo -e "\e[1;37m$(cat $SHARED_SCRIPTS_PATH/script-header)\e[0m"
@@ -118,17 +87,7 @@ is_package_installed() {
     return 1
 }
 
-is_virtualenv_available() {
-    if [ -d $REPO_ROOT_PATH/scripts/python/venv ]; then
-        return 0
-    fi
 
-    return 1
-}
-
-create_virtualenv() {
-    python -m venv $1    
-}
 
 export -f write_header
 export -f write_info
@@ -137,6 +96,3 @@ export -f write_error
 export -f write_response
 export -f is_package_installed
 export -f is_command_available
-export -f is_pyenv_available
-export -f is_pyenv_installed
-export -f is_python_available

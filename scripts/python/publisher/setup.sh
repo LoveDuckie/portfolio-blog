@@ -19,34 +19,29 @@ usage() {
     exit 1
 }
 
-if ! is_pyenv_available; then
-    write_error "setup" "pyenv is not available from the command-line"
-    exit 1
-fi
-
 if ! is_python_available; then
     write_error "setup" "python is not available from the command-line, or installed."
-    exit 1
+    exit 3
 fi
 
 while getopts ':t:h?' opt; do
-   case $opt in
-        t)
-            TARGET_PATH=$OPTARG
-            write_warning "setup" "target path for project is \"$OPTARG\""
+    case $opt in
+    t)
+        TARGET_PATH=$OPTARG
+        write_warning "setup" "target path for project is \"$OPTARG\""
         ;;
-        h|?)
-            usage
+    h | ?)
+        usage
         ;;
-        :)
-            write_error "setup" "\"-${OPTARG}\" requires an argument."
-            usage
+    :)
+        write_error "setup" "\"-${OPTARG}\" requires an argument."
+        usage
         ;;
-        *)
-            write_error "setup" "\"-${OPTARG}\" is not recognised."
-            usage
+    *)
+        write_error "setup" "\"-${OPTARG}\" is not recognised."
+        usage
         ;;
-   esac
+    esac
 done
 
 if [ -z $TARGET_PATH ]; then
