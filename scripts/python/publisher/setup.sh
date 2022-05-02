@@ -7,7 +7,7 @@
 
 EOF
 CURRENT_SCRIPT_DIRECTORY=${CURRENT_SCRIPT_DIRECTORY:-$(dirname $(realpath $0))}
-export SHARED_SCRIPTS_PATH=${SHARED_SCRIPTS_PATH:-$(realpath $CURRENT_SCRIPT_DIRECTORY/../../bash/shared)}
+export SHARED_SCRIPTS_PATH=${SHARED_SCRIPTS_PATH:-$(realpath $CURRENT_SCRIPT_DIRECTORY/../../shell/shared)}
 export CURRENT_SCRIPT_FILENAME=${CURRENT_SCRIPT_FILENAME:-$(basename $0)}
 export CURRENT_SCRIPT_FILENAME_BASE=${CURRENT_SCRIPT_FILENAME%.*}
 source "$SHARED_SCRIPTS_PATH/shared.sh"
@@ -50,7 +50,17 @@ if [ -z $TARGET_PATH ]; then
 fi
 
 if ! is_virtualenv_available; then
+    write_warning "setup" "no virtual environment was found. creating."
     if ! create_virtualenv $TARGET_PATH; then
         write_error "setup" "failed to create the virtualenv"
+    else
+        write_success "setup" "successfully created virtual environment"
     fi
 fi
+
+write_info "setup" "installing dependencies"
+
+pip install -r requirements.txt
+
+
+write_success "setup" "done"

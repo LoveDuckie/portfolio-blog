@@ -15,6 +15,7 @@ write_header
 
 usage() {
    write_info "export-requirements" "usage - export-requirements"
+   exit 1
 }
 
 while getopts ':t:h?' opt; do
@@ -36,3 +37,9 @@ while getopts ':t:h?' opt; do
       ;;
    esac
 done
+
+write_info "export-requirements" "exporting requirements"
+
+python -m pip freeze > requirements.txt
+
+write_success "export-requirements" "done"
