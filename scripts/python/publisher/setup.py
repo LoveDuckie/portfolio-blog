@@ -16,6 +16,10 @@ def get_requirements() -> List:
 
 requirements_found = get_requirements()
 
+def get_project_url(*args) -> str:
+    parts = '/'.join(args)
+    return f'https://github.com/LoveDuckie/portfolio-blog/{parts}'
+
 setuptools.setup(
     name="publisher",
     version="0.0.1",
@@ -24,9 +28,9 @@ setuptools.setup(
     description="A Python application responsible for processing and publishing markdown blogs",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/LoveDuckie/portfolio-blog/tree/main/scripts/python/publisher",
+    url=get_project_url("/tree/main/scripts/python/publisher"),
     project_urls={
-        "Bug Tracker": "https://github.com/LoveDuckie/portfolio-blog/tree/main/scripts/python/publisher/issues",
+        "Bug Tracker": get_project_url("issues"),
     },
     classifiers=[
         "Programming Language :: Python :: 3",
