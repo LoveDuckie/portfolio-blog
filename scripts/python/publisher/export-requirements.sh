@@ -1,7 +1,7 @@
 #!/bin/bash
 <<EOF
 
-   Portfolio Blog \ Publish \ Export Requirements
+   Portfolio Blog \ Publisher \ Export Requirements
 
    Export the virtual environment requirements for the Python script.
 

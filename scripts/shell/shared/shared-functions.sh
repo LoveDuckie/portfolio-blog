@@ -8,10 +8,10 @@
 EOF
 [ -n "${SHARED_FUNCTIONS}" ] && return
 SHARED_FUNCTIONS=0
-CURRENT_SCRIPT_DIRECTORY=${CURRENT_SCRIPT_DIRECTORY:-$(dirname $(realpath $0))}
-export SHARED_SCRIPTS_PATH=$(realpath ${SHARED_SCRIPTS_PATH:-$CURRENT_SCRIPT_DIRECTORY})
+CURRENT_SCRIPT_DIRECTORY_FUNCTIONS=${CURRENT_SCRIPT_DIRECTORY_FUNCTIONS:-$(dirname $(realpath $0))}
+export SHARED_SCRIPTS_PATH=$(realpath ${SHARED_SCRIPTS_PATH:-$CURRENT_SCRIPT_DIRECTORY_FUNCTIONS})
 export REPO_ROOT_PATH=${REPO_ROOT_PATH:-$(realpath $SHARED_SCRIPTS_PATH/../../)}
-source "$SHARED_SCRIPTS_PATH/shared-variables.sh"
+. "$SHARED_SCRIPTS_PATH/shared-variables.sh"
 
 is_running_as_root() {
     if [ $(whoami) != 'root' ]; then

@@ -26,14 +26,12 @@ class BlogCollection(object):
     def get_all_blog_collection(cls, blogs_path):
         if blogs_path is None or blogs_path == '':
             raise ValueError("The blogs path was nto defined")
-        
+
         if not os.path.exists(blogs_path):
             raise IOError(f"Failed to find the path \"{blogs_path}\"")
-        
-        all_collection = []
-        
+
         for root, dirs, files in os.walk(blogs_path,topdown=False):
             for file in files:
                 if os.path.isfile(file):
                     return
-        return all_collection
+        return []
