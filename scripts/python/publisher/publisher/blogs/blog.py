@@ -2,7 +2,7 @@ from typing import Any
 import os, sys
 import json
 
-class Blog(object):
+class Blog:
     def __init__(self, **kwargs) -> None:
         self.properties = {}
         for key in kwargs:

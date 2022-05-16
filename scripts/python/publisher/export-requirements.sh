@@ -41,5 +41,6 @@ done
 write_info "export-requirements" "exporting requirements"
 
 python -m pip freeze > requirements.txt
+write_response "export-requirements" "export requirements"
 
 write_success "export-requirements" "done"

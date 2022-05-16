@@ -20,13 +20,28 @@ def cli(ctx):
 def cli_configure(ctx):
     pass
 
+@cli.group("blogs")
+def cli_blogs(ctx):
+    pass
+
+@cli_blogs.command("blogs")
+def cli_blogs_create(ctx):
+    pass
+
+@cli.group("collections")
+def cli_collections(ctx):
+    pass
+
+@cli_collections.command("create")
+@click.option("--name","-n",required=True, prompt=True, prompt_required=True, type=str)
+def cli_collections_create(ctx):
+    pass
 
 @cli_configure.command("publisher")
 @click.option("--set", type=str, required=True, prompt_required=True)
 @click.pass_context
 def cli_configure_publisher(set: str):
     return
-
 
 @cli_configure.command("exporter")
 @click.option("--set", type=str, required=True, prompt_required=True)
@@ -49,7 +64,7 @@ def cli_export(ctx):
 @cli.command("publish-blog", help="Publish the blog to the specified platforms.")
 @click.option("--platform", '-p', multiple=True, type=click.Choice(['hashnode', 'dev.to']), help="The platforms to publish the blog to.")
 @click.option("--blog", '-b', multiple=True, type=str, help="The slug names of the blogs to publish.")
-def publish_blog(platform: List, blog):
+def publish_blog(platform: List, blog: str):
     for platform in platform:
         click.echo(platform)
 
@@ -65,3 +80,8 @@ def publish_collection(collection: str):
 @click.command("configure-platform")
 def configure_platform():
     pass
+
+
+if __name__ == "__main__":
+    
+    cli()
