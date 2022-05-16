@@ -10,18 +10,51 @@ logger = get_logger()
 
 
 @click.group()
-def cli():
+@click.pass_context
+def cli(ctx):
     pass
 
 
-@click.command("publish-blog", help="Publish the blog to the specified platforms.")
+@cli.group("configure")
+@click.pass_context
+def cli_configure(ctx):
+    pass
+
+
+@cli_configure.command("publisher")
+@click.option("--set", type=str, required=True, prompt_required=True)
+@click.pass_context
+def cli_configure_publisher(set: str):
+    return
+
+
+@cli_configure.command("exporter")
+@click.option("--set", type=str, required=True, prompt_required=True)
+@click.pass_context
+def cli_configure_exporter(set: str):
+    return
+
+@cli.group("publish")
+@click.pass_context
+def cli_publish(ctx):
+    return
+
+@cli.group("export")
+@click.option("--exporter", type=str, help="The type of exporter to use")
+@click.option("--path", type=str, help="The output path for the exporter (where relevant)")
+@click.pass_context
+def cli_export(ctx):
+    return
+
+@cli.command("publish-blog", help="Publish the blog to the specified platforms.")
 @click.option("--platform", '-p', multiple=True, type=click.Choice(['hashnode', 'dev.to']), help="The platforms to publish the blog to.")
 @click.option("--blog", '-b', multiple=True, type=str, help="The slug names of the blogs to publish.")
-def publish_blog(platform: List):
-    pass
+def publish_blog(platform: List, blog):
+    for platform in platform:
+        click.echo(platform)
 
 
-@click.command("publish-collection", help="Publish a collection of blogs.")
+@cli.command("publish-collection", help="Publish a collection of blogs.")
 @click.option("--collection", '-c', prompt=True, type=str, default=None, required=True, help="The name of the collection to publish.")
 def publish_collection(collection: str):
     if collection is None:
@@ -29,10 +62,6 @@ def publish_collection(collection: str):
             "The collection slug name was not defined. Unable to continue.")
 
 
-@click.command(name="Configure Platform")
+@click.command("configure-platform")
 def configure_platform():
     pass
-
-
-cli.add_command(publish_blog)
-cli.add_command(publish_collection)

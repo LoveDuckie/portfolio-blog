@@ -8,7 +8,6 @@ import sys
 import logging
 import argparse
 import json
-import threading
 from typing import List
 
 from publisher.utility.utility_blogs import get_formatted_timestamp, create_slug_from_name
