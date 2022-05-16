@@ -24,7 +24,9 @@ def publish_blog(platform: List):
 @click.command(name="Publish Collection", help="Publish a collection of blogs.")
 @click.option("--collection", '-c', prompt=True, type=str, default=None, required=True, help="The name of the collection to publish.")
 def publish_collection(collection: str):
-    pass
+    if collection is None:
+        raise Exception(
+            "The collection slug name was not defined. Unable to continue.")
 
 
 @click.command(name="Configure Platform")
