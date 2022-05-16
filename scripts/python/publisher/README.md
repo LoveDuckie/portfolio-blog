@@ -26,7 +26,6 @@ This tool is installable from PyPi by running the following command.
 #!/bin/bash
 
 pip install publisher
-
 ```
 
 The tool should then be usable from the command-line by running the following.
@@ -37,7 +36,6 @@ The tool should then be usable from the command-line by running the following.
 #!/bin/bash
 
 python -m publisher collections create <collection name>
-
 ```
 
 ### Images
@@ -45,3 +43,5 @@ python -m publisher collections create <collection name>
 Images are automatically uploaded to image sharing websites should there be configured API keys.
 
 ### Configuration
+
+The default configuration file is found under `publisher/data/config/default.ini`.

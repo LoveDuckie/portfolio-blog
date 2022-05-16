@@ -2,6 +2,7 @@ from typing import List
 from publisher.logging.publisher_logger import get_logger
 import rich_click as click
 
+
 click.rich_click.SHOW_ARGUMENTS = True
 click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
 
@@ -24,9 +25,18 @@ def cli_configure(ctx):
 def cli_blogs(ctx):
     pass
 
-@cli_blogs.command("blogs")
+@cli_blogs.command("create")
 def cli_blogs_create(ctx):
     pass
+
+@cli_blogs.command("delete")
+def cli_blogs_delete(ctx):
+    pass
+
+@cli_blogs.command("list")
+@click.option("--collection", default="default", type=str)
+def cli_blogs_list(ctx):
+    
 
 @cli.group("collections")
 def cli_collections(ctx):
@@ -44,9 +54,10 @@ def cli_configure_publisher(set: str):
     return
 
 @cli_configure.command("exporter")
-@click.option("--set", type=str, required=True, prompt_required=True)
+@click.option("--parameter", '-p', type=str, required=True, prompt_required=True)
 @click.pass_context
-def cli_configure_exporter(set: str):
+def cli_configure_exporter(parameter: str):
+    
     return
 
 @cli.group("publish")
@@ -54,7 +65,7 @@ def cli_configure_exporter(set: str):
 def cli_publish(ctx):
     return
 
-@cli.group("export")
+@cli.group("export", help="Export a blog to HTML or PDF format.")
 @click.option("--exporter", type=str, help="The type of exporter to use")
 @click.option("--path", type=str, help="The output path for the exporter (where relevant)")
 @click.pass_context
@@ -83,5 +94,4 @@ def configure_platform():
 
 
 if __name__ == "__main__":
-    
     cli()

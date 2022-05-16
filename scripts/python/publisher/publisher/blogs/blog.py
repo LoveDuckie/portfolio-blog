@@ -1,6 +1,12 @@
-from typing import Any
-import os, sys
 import json
+import os
+from typing import Any
+
+
+class BlogMetadata:
+    def __init__(self) -> None:
+        pass
+
 
 class Blog:
     def __init__(self, **kwargs) -> None:
@@ -9,46 +15,50 @@ class Blog:
             self.__dict__[key] = kwargs[key]
         super().__init__()
 
-    @property.getter
-    def blog_name(self):
+    @property
+    def name(self):
         return self.name
-    
+
+    @name.getter
+    def name(self):
+        return self.name
+
+    @name.setter
+    def name(self, value):
+        if value is None:
+            raise ValueError("The name is invalid or null")
+        self.name = value
+
     @property.getter
-    def blog_slug(self):
+    def slug(self):
         return self.slug
 
     @property.getter
-    def blog_description(self):
+    def description(self):
         return self.description
-    
+
     @property.getter
-    def blog_collection(self):
+    def collection(self):
         return None
 
-    def __getattribute__(self, __name: str) -> Any:
-        return super().__getattribute__(__name)
-
-    def __setattr__(self, __name: str, __value: Any) -> None:
-        return super().__setattr__(__name, __value)
-
-    def __getitem__(self, key):
-        return self.__dict__[key]
-    
     @classmethod
-    def load_blog(cls, blog_path):
+    def load_blog(cls, blog_path):  # sourcery skip: raise-specific-error
         if blog_path is None or blog_path == '':
             raise ValueError("The blog path is invalid or null")
 
         if not os.path.isdir(blog_path):
-            raise IOError(f'The path \"{blog_path}\" is not a valid directory. It must be a directory.')
+            raise IOError(
+                f'The path \"{blog_path}\" is not a valid directory. It must be a directory.')
 
         blog_metadata_filepath = os.path.join(blog_path, "blog.json")
 
         if not os.path.isfile(blog_metadata_filepath):
-            raise IOError(f'The file \"{blog_metadata_filepath}\" is not a valid file')
+            raise IOError(
+                f'The file \"{blog_metadata_filepath}\" is not a valid file')
 
         if not os.path.exists(blog_metadata_filepath):
-            raise Exception(f'Unable to find the metadata file \"{blog_metadata_filepath}\".')
+            raise Exception(
+                f'Unable to find the metadata file \"{blog_metadata_filepath}\".')
 
         blog_metadata = None
 

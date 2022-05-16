@@ -1,16 +1,47 @@
 import os
 import subprocess
 
-def get_default_blogs_path() -> str:
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), ".." , "..", "..", "..", "blogs"))
+_repo_root = None
 
-def get_default_blog_collection_path() -> str:
+def _create_repo_root() -> str:
+    process = subprocess.Popen(['git', 'rev-parse', '--show-toplevel'],
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate()
+    return stdout.decode('ascii').rstrip()
+
+def get_repo_root() -> str:
+    """Get the absolute path to the root of the Git repository
+
+    Returns:
+        str: Returns the absolute path of the Git repository
+    """
+    global _repo_root
+    
+    if _repo_root is None:
+        _repo_root = _create_repo_root()
+    return _repo_root
+
+def get_default_blogs_path() -> str:
+    return os.path.abspath(os.path.join(get_repo_root(), "blogs"))
+
+
+def get_default_blog_collections_path() -> str:
     """Get the default collections path
 
     Returns:
         str: Returns the absolute path to the blog collections
     """
-    return os.path.abspath(os.path.join(get_default_blogs_path(), "collections"))
+    return os.path.abspath(os.path.join(get_repo_root, "collections"))
+
+def get_blog_collection_path(collection_name: str) -> str:
+    return os.path.join(get_repo_root(), "blogs", "collections")
+
+def get_blog_path(blog_name: str, collection_name: str = None) -> str:
+    collection_name = collection_name if collection_name is not None else "default"
+    return os.path.join(get_blog_collection_path(collection_name), blog_name)
+
+
 
 def get_default_export_path():
     """Get the default path to where blogs are exported to
@@ -18,11 +49,8 @@ def get_default_export_path():
     Returns:
         _type_: _description_
     """
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), ".." , "..", "..", "..", "exported"))
+    return os.path.abspath(os.path.join(get_repo_root(), "exported"))
 
-def get_repo_root() -> str:
-    
-    return subprocess.run(["git", "rev-parse", "--show-toplevel"]).stdout.read()
 
 def get_project_root():
     """Get the absolute path to the root of the project
@@ -30,7 +58,7 @@ def get_project_root():
     Returns:
         str: The absolute path to the root of of the project
     """
-    return os.path.abspath(os.path.join(os.path.dirname(__file__),"..",".."))
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 
 def get_project_path(*paths) -> str:
