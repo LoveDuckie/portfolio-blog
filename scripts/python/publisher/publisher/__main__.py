@@ -21,31 +21,37 @@ def cli(ctx):
 def cli_configure(ctx):
     pass
 
+
 @cli.group("blogs")
 def cli_blogs(ctx):
     pass
+
 
 @cli_blogs.command("create")
 def cli_blogs_create(ctx):
     pass
 
+
 @cli_blogs.command("delete")
 def cli_blogs_delete(ctx):
     pass
 
+
 @cli_blogs.command("list")
 @click.option("--collection", default="default", type=str)
 def cli_blogs_list(ctx):
-    
+    pass
 
 @cli.group("collections")
 def cli_collections(ctx):
     pass
 
+
 @cli_collections.command("create")
-@click.option("--name","-n",required=True, prompt=True, prompt_required=True, type=str)
+@click.option("--name", "-n", required=True, prompt=True, prompt_required=True, type=str)
 def cli_collections_create(ctx):
     pass
+
 
 @cli_configure.command("publisher")
 @click.option("--set", type=str, required=True, prompt_required=True)
@@ -53,17 +59,20 @@ def cli_collections_create(ctx):
 def cli_configure_publisher(set: str):
     return
 
+
 @cli_configure.command("exporter")
 @click.option("--parameter", '-p', type=str, required=True, prompt_required=True)
 @click.pass_context
 def cli_configure_exporter(parameter: str):
-    
+
     return
+
 
 @cli.group("publish")
 @click.pass_context
 def cli_publish(ctx):
     return
+
 
 @cli.group("export", help="Export a blog to HTML or PDF format.")
 @click.option("--exporter", type=str, help="The type of exporter to use")
@@ -71,6 +80,7 @@ def cli_publish(ctx):
 @click.pass_context
 def cli_export(ctx):
     return
+
 
 @cli.command("publish-blog", help="Publish the blog to the specified platforms.")
 @click.option("--platform", '-p', multiple=True, type=click.Choice(['hashnode', 'dev.to']), help="The platforms to publish the blog to.")

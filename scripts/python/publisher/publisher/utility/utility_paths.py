@@ -3,12 +3,14 @@ import subprocess
 
 _repo_root = None
 
+
 def _create_repo_root() -> str:
     process = subprocess.Popen(['git', 'rev-parse', '--show-toplevel'],
-                    stdout=subprocess.PIPE, 
-                    stderr=subprocess.PIPE)
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     return stdout.decode('ascii').rstrip()
+
 
 def get_repo_root() -> str:
     """Get the absolute path to the root of the Git repository
@@ -17,10 +19,11 @@ def get_repo_root() -> str:
         str: Returns the absolute path of the Git repository
     """
     global _repo_root
-    
+
     if _repo_root is None:
         _repo_root = _create_repo_root()
     return _repo_root
+
 
 def get_default_blogs_path() -> str:
     return os.path.abspath(os.path.join(get_repo_root(), "blogs"))
@@ -34,13 +37,14 @@ def get_default_blog_collections_path() -> str:
     """
     return os.path.abspath(os.path.join(get_repo_root, "collections"))
 
+
 def get_blog_collection_path(collection_name: str) -> str:
     return os.path.join(get_repo_root(), "blogs", "collections")
+
 
 def get_blog_path(blog_name: str, collection_name: str = None) -> str:
     collection_name = collection_name if collection_name is not None else "default"
     return os.path.join(get_blog_collection_path(collection_name), blog_name)
-
 
 
 def get_default_export_path():
@@ -68,3 +72,7 @@ def get_project_path(*paths) -> str:
         str: The absolute path
     """
     return os.path.join(get_project_root(), *paths)
+
+
+def get_default_config_filepath() -> str:
+    return os.path.join(get_project_root(), "publisher", "data", "config", "default.ini")

@@ -18,11 +18,7 @@ class Blog:
     @property
     def name(self):
         return self.name
-
-    @name.getter
-    def name(self):
-        return self.name
-
+    
     @name.setter
     def name(self, value):
         if value is None:
@@ -32,6 +28,10 @@ class Blog:
     @property.getter
     def slug(self):
         return self.slug
+
+    @slug.setter
+    def slug(self, value):
+        return
 
     @property.getter
     def description(self):
