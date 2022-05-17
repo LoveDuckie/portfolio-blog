@@ -1,7 +1,7 @@
 
 
 from publisher.blogs.blog import Blog
-from publisher.exporter.exporter_interface import ExporterInterface
+from publisher.exporters.exporter_interface import ExporterInterface
 import markdown
 
 

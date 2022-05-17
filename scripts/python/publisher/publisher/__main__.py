@@ -1,6 +1,6 @@
-from typing import List
 from publisher.logging.publisher_logger import get_logger
 import rich_click as click
+from publisher.utility.utility_blogs import is_valid_collection, create_slug_from_name
 
 
 click.rich_click.SHOW_ARGUMENTS = True
@@ -42,6 +42,7 @@ def cli_blogs_delete(ctx):
 def cli_blogs_list(ctx):
     pass
 
+
 @cli.group("collections")
 def cli_collections(ctx):
     pass
@@ -49,8 +50,13 @@ def cli_collections(ctx):
 
 @cli_collections.command("create")
 @click.option("--name", "-n", required=True, prompt=True, prompt_required=True, type=str)
-def cli_collections_create(ctx):
-    pass
+def cli_collections_create(ctx, name: str):
+    if name is None:
+        raise ValueError("The name is invalid or null")
+
+    collection_slug_name = create_slug_from_name(name)
+    if is_valid_collection(collection_slug_name):
+        click.echo(f"The collection \"{name}\" already exists")
 
 
 @cli_configure.command("publisher")
@@ -64,13 +70,42 @@ def cli_configure_publisher(set: str):
 @click.option("--parameter", '-p', type=str, required=True, prompt_required=True)
 @click.pass_context
 def cli_configure_exporter(parameter: str):
-
     return
 
 
-@cli.group("publish")
+@cli_configure.command("uploader")
+@click.option("--parameter", '-p', type=str, required=True, prompt_required=True)
 @click.pass_context
-def cli_publish(ctx):
+def cli_configure_exporter(parameter: str):
+    return
+
+
+@cli.group("upload")
+@click.pass_context
+def cli_upload(ctx):
+    return
+
+
+def validate_blog(ctx, value):
+    return
+
+
+def validate_collection(ctx, value):
+    return
+
+
+@cli_upload.command("blog", help="Upload a blog.")
+@click.option('--name', '-n', type=str, default=None, required=True, prompt=True, prompt_required=True)
+@click.option('--collection', '-c', type=str, default="default", required=True, prompt=True, prompt_required=True)
+@click.pass_context
+def cli_upload_blog(ctx):
+    return
+
+
+@cli_upload.command("collection", help="Upload a collection.")
+@click.option('--name', '-n', type=str, default=None, required=True, prompt=True, prompt_required=True)
+@click.pass_context
+def cli_upload_collection(ctx):
     return
 
 
@@ -80,22 +115,6 @@ def cli_publish(ctx):
 @click.pass_context
 def cli_export(ctx):
     return
-
-
-@cli.command("publish-blog", help="Publish the blog to the specified platforms.")
-@click.option("--platform", '-p', multiple=True, type=click.Choice(['hashnode', 'dev.to']), help="The platforms to publish the blog to.")
-@click.option("--blog", '-b', multiple=True, type=str, help="The slug names of the blogs to publish.")
-def publish_blog(platform: List, blog: str):
-    for platform in platform:
-        click.echo(platform)
-
-
-@cli.command("publish-collection", help="Publish a collection of blogs.")
-@click.option("--collection", '-c', prompt=True, type=str, default=None, required=True, help="The name of the collection to publish.")
-def publish_collection(collection: str):
-    if collection is None:
-        raise Exception(
-            "The collection slug name was not defined. Unable to continue.")
 
 
 @click.command("configure-platform")

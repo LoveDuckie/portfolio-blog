@@ -29,7 +29,7 @@ def get_default_blogs_path() -> str:
     return os.path.abspath(os.path.join(get_repo_root(), "blogs"))
 
 
-def get_default_blog_collections_path() -> str:
+def get_default_collections_path() -> str:
     """Get the default collections path
 
     Returns:

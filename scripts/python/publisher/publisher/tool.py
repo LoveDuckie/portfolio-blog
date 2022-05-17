@@ -11,6 +11,7 @@ import json
 from typing import List
 
 from publisher.utility.utility_blogs import get_formatted_timestamp, create_slug_from_name
+from publisher.utility.utility_paths import get_blog_collection_path
 
 
 def get_default_exporters() -> List[str]:
@@ -115,35 +116,6 @@ def list_all_blogs(blog_collection_name=""):
     return paths
 
 
-def is_valid_blog_collection(blog_collection_slug_name):
-    if blog_collection_slug_name is None or blog_collection_slug_name == '':
-        raise ValueError("The blog collection slug name is invalid or null")
-
-    blog_collection_root_path = get_blog_collections_root_path()
-    if blog_collection_root_path is None or blog_collection_root_path == '':
-        raise ValueError("The blog collection root paht is invalid or null")
-    if not os.path.exists(blog_collection_root_path):
-        raise IOError(
-            f'The path \"{blog_collection_root_path}\" was not found.')
-
-    return
-
-
-def is_valid_blog(blog_slug_name: str, blog_collection_slug_name: str = "default"):
-    if blog_slug_name is None:
-        raise ValueError("The blog slug name is invalid or null")
-
-    if not is_valid_blog_collection(blog_collection_slug_name):
-        raise Exception("")
-
-    blog_collections_root = get_blog_collections_root_path()
-
-
-def list_all_collection():
-    if parsed_args is None:
-        raise Exception("The parsed arguments are null or invalid")
-
-
 def publish_blog():
     blog_name = parsed_args.blog_name
     blog_collection = parsed_args.blog_collection
@@ -191,38 +163,6 @@ def export_blog(blog_name, blog_collection_name='default'):
     return
 
 
-def get_blog_collections_root_path():
-    if parsed_args is None:
-        raise ValueError("The parsed arguments are invalid.")
-
-    if parsed_args.blogs_path is None:
-        raise ValueError("The blogs path specified is invalid or null.")
-
-    blog_collection_root_path = os.path.join(
-        parsed_args.blogs_path, "collection")
-
-    if blog_collection_root_path is None or blog_collection_root_path == "":
-        raise ValueError("The blog collection path is invalid or null.")
-
-    return blog_collection_root_path
-
-
-def get_blog_collection_path(blog_collection_name):
-    if blog_collection_name is None or blog_collection_name == '':
-        raise ValueError("The blog collection name is invalid or null")
-
-    blogs_collection_root_path = get_blog_collections_root_path()
-    if blogs_collection_root_path is None or blogs_collection_root_path == '':
-        raise ValueError("The blog collection path is invalid or null")
-
-    slug_name = create_slug_from_name(blog_collection_name)
-    blog_collection_path = os.path.join(blogs_collection_root_path, slug_name)
-    if blog_collection_path is None or blog_collection_path == '':
-        raise ValueError("The blog collection path is invalid or null")
-
-    return blog_collection_path
-
-
 def get_blog_collection_metadata(blog_collection_name):
     blog_collection_metadata_filepath = os.path.join(
         get_blog_collection_path(blog_collection_name), "collection.json")
@@ -239,12 +179,11 @@ def get_blog_collection_metadata(blog_collection_name):
     if metadata is None:
         raise ValueError("The meta data is invalid or null")
 
-    loaded_data = json.loads(metadata)
-    return loaded_data
+    return json.loads(metadata)
 
 
-def get_all_blogs_from_collection(blog_collection_slug_name):
-    if blog_collection_slug_name is None or blog_collection_slug_name == '':
+def get_all_blogs_from_collection(collection_slug):
+    if collection_slug is None or collection_slug == '':
         raise ValueError(
             "The blog collection name specified is invalid or null")
 

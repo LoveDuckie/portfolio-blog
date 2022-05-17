@@ -6,5 +6,5 @@ class UploaderInterface:
         pass
 
     @abstractmethod
-    def export(self):
+    def upload(self):
         return
