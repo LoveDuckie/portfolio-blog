@@ -4,12 +4,18 @@ import sys
 from configparser import ConfigParser
 from typing import Any
 
-from publisher.utility.utility_paths import get_default_config_filepath
+from publisher.utility.utility_paths import get_default_config_filepath, get_default_user_config_filepath
 
 
 def _get_config() -> ConfigParser:
     config_parser = ConfigParser()
     config_parser.read(get_default_config_filepath())
+    return config_parser
+
+
+def _get_user_configg() -> ConfigParser:
+    config_parser = ConfigParser()
+    config_parser.read(get_default_user_config_filepath())
     return config_parser
 
 
@@ -39,8 +45,7 @@ def get_config_property(property_section: str, property_name: str) -> Any:
         raise ValueError("The property section is ivnalid or null")
 
     if not has_config_property(property_section, property_name):
-        raise ValueError("")
+        raise ValueError(
+            f"Unable to find the configuration value \"{property_section}.{property_name}\"")
 
-
-def generate_configuration(config_filepath: str):
-    pass
+    config = _get_config()

@@ -1,7 +1,6 @@
 import re
 import datetime
 from typing import Tuple
-from publisher.tool import get_blog_collections_root_path
 
 from publisher.utility.utility_paths import get_default_collections_path
 
@@ -30,8 +29,6 @@ def is_valid_blog(blog_slug_name: str, collection_slug: str = "default"):
 
     if not is_valid_collection(collection_slug):
         raise Exception("The blog collection slug name is invalid or null")
-
-    blog_collections_root = get_blog_collections_root_path()
 
 
 def create_slug_from_name(blog_name: str):

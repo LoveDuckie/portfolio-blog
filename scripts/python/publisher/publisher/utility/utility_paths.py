@@ -76,3 +76,11 @@ def get_project_path(*paths) -> str:
 
 def get_default_config_filepath() -> str:
     return os.path.join(get_project_root(), "publisher", "data", "config", "default.ini")
+
+def get_default_user_config_filepath() -> str:
+    """Get the default user configuration file path
+
+    Returns:
+        str: Returns the absolute path to the user configuration path
+    """
+    return os.path.join(get_project_root(), "config","user.ini")

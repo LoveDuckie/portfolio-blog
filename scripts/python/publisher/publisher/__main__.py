@@ -67,6 +67,7 @@ def cli_configure_publisher(set: str):
 
 
 @cli_configure.command("exporter")
+@click.option("--type", "-t", type=str, help="The absolute type path for the exporter.")
 @click.option("--parameter", '-p', type=str, required=True, prompt_required=True)
 @click.pass_context
 def cli_configure_exporter(parameter: str):
@@ -109,17 +110,13 @@ def cli_upload_collection(ctx):
     return
 
 
-@cli.group("export", help="Export a blog to HTML or PDF format.")
+@cli.group("export", help="Render the blog to some kind of format.")
 @click.option("--exporter", type=str, help="The type of exporter to use")
 @click.option("--path", type=str, help="The output path for the exporter (where relevant)")
 @click.pass_context
 def cli_export(ctx):
     return
 
-
-@click.command("configure-platform")
-def configure_platform():
-    pass
 
 
 if __name__ == "__main__":

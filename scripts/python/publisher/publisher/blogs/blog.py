@@ -1,18 +1,21 @@
 import json
 import os
-from typing import Any
+from typing import Any, Optional
+from pydantic import BaseModel
 
-
-class BlogMetadata:
-    def __init__(self) -> None:
-        pass
-
+class BlogMetadata(BaseModel):
+    name: str
+    checksum: str
+    summary: str
+    slug: str
+    path: Optional[str]
+    def __init__(__pydantic_self__, **data: Any) -> None:
+        super().__init__(**data)
 
 class Blog:
-    def __init__(self, **kwargs) -> None:
-        self.properties = {}
-        for key in kwargs:
-            self.__dict__[key] = kwargs[key]
+    def __init__(self, metadata: BlogMetadata) -> None:
+        if metadata is None:
+            raise ValueError("The metadata for this blog is invalid or null")
         super().__init__()
 
     @property
@@ -25,7 +28,7 @@ class Blog:
             raise ValueError("The name is invalid or null")
         self.name = value
 
-    @property.getter
+    @property
     def slug(self):
         return self.slug
 
@@ -33,13 +36,17 @@ class Blog:
     def slug(self, value):
         return
 
-    @property.getter
+    @property
     def description(self):
         return self.description
+    
+    @property
+    def content(self):
+        return self.content
 
-    @property.getter
+    @property
     def collection(self):
-        return None
+        return self.collection
 
     @classmethod
     def load_blog(cls, blog_path):  # sourcery skip: raise-specific-error
