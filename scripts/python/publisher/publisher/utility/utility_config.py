@@ -1,6 +1,4 @@
 from multiprocessing.sharedctypes import Value
-import os
-import sys
 from configparser import ConfigParser
 from typing import Any
 
@@ -13,7 +11,7 @@ def _get_config() -> ConfigParser:
     return config_parser
 
 
-def _get_user_configg() -> ConfigParser:
+def _get_user_config() -> ConfigParser:
     config_parser = ConfigParser()
     config_parser.read(get_default_user_config_filepath())
     return config_parser
@@ -38,6 +36,20 @@ def has_config_property(property_section: str, property_name: str) -> bool:
     return True
 
 
+def get_user_config_property(property_section: str, property_name: str) -> str:
+    if property_section is None:
+        raise ValueError("The property section is ivnalid or null")
+    if property_name is None:
+        raise ValueError("The property section is ivnalid or null")
+
+    if not has_config_property(property_section, property_name):
+        raise ValueError(
+            f"Unable to find the configuration value \"{property_section}.{property_name}\"")
+
+    config = _get_user_config()
+    return config[property_section][property_name]
+
+
 def get_config_property(property_section: str, property_name: str) -> Any:
     if property_section is None:
         raise ValueError("The property section is ivnalid or null")
@@ -49,3 +61,4 @@ def get_config_property(property_section: str, property_name: str) -> Any:
             f"Unable to find the configuration value \"{property_section}.{property_name}\"")
 
     config = _get_config()
+    return config[property_section][property_name]

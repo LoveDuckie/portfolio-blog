@@ -6,5 +6,7 @@ class UploaderInterface:
         pass
 
     @abstractmethod
-    def upload(self):
+    async def upload(self, content: str):
+        if content is None:
+            raise ValueError("The content is invalid or null")
         return

@@ -1,4 +1,5 @@
 from __future__ import annotations
+import json
 import os
 from typing import Any, List, Optional
 from pydantic import BaseModel
@@ -9,6 +10,8 @@ class BlogCollectionMetadata(BaseModel):
     description: str
     summary: str
     filepath: Optional[str]
+    tags: Optional[List[str]]
+    metadata: dict[str,dict]
     slug: str
 
     def __init__(__pydantic_self__, **data: Any) -> None:
@@ -30,11 +33,16 @@ class BlogCollectionMetadata(BaseModel):
         with open(metadata_filepath, 'r') as f:
             raw = f.read()
 
-        return cls.parse_raw(raw)
+        return BlogCollectionMetadata.parse_raw(raw)
     
     
     def save(self, filepath: str = None):
-        pass
+        if filepath is None and hasattr(self, "filepath"):
+            filepath = self.filepath
+        
+        content = json.dumps(self)
+        
+        
 
 
 class BlogCollection:
@@ -45,20 +53,20 @@ class BlogCollection:
         self.metadata = metadata
 
     @property
-    def _name(self) -> str:
-        return self.name
+    def name(self) -> str:
+        return self._name
 
     @property
-    def _slug(self) -> str:
-        return self.name
+    def slug(self) -> str:
+        return self._name
 
     @property
-    def _description(self) -> str:
-        return self.description
+    def description(self) -> str:
+        return self._description
 
     @property
-    def _summary(self) -> str:
-        return self.summary
+    def summary(self) -> str:
+        return self._summary
     
     @property
     def blogs(self) -> List:

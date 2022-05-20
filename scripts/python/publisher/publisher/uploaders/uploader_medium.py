@@ -1,8 +1,14 @@
 from publisher.uploaders.uploader_interface import UploaderInterface
 
+
+def get_medium_api_url(*urls) -> str:
+    urls_combined: str = '/'.join(urls)
+    return f"https://api.medium.com/v1/{urls_combined}"
+
+
 class MediumUploader(UploaderInterface):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        
-    def upload(self):
+
+    async def upload(self, content: str):
         return super().upload()

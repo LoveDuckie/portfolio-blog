@@ -11,7 +11,7 @@ import json
 from typing import List
 
 from publisher.utility.utility_blogs import get_formatted_timestamp, create_slug_from_name
-from publisher.utility.utility_paths import get_blog_collection_path
+from publisher.utility.utility_paths import get_collection_path
 
 
 def get_default_exporters() -> List[str]:
@@ -165,7 +165,7 @@ def export_blog(blog_name, blog_collection_name='default'):
 
 def get_blog_collection_metadata(blog_collection_name):
     blog_collection_metadata_filepath = os.path.join(
-        get_blog_collection_path(blog_collection_name), "collection.json")
+        get_collection_path(blog_collection_name), "collection.json")
 
     if not os.path.exists(blog_collection_metadata_filepath):
         raise FileExistsError(

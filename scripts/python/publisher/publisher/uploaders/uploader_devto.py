@@ -5,5 +5,5 @@ class DevToUploader(UploaderInterface):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
     
-    def upload(self):
-        return super().upload()
+    async def upload(self, content: str):
+        return super().upload(content)
