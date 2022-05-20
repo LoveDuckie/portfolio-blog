@@ -41,6 +41,14 @@ def cli_blogs(ctx, collection: str):
 def cli_blogs_create(ctx):
     pass
 
+@cli_blogs.command("open", help="Open an existing blog from the collection specified.")
+@click.option("--blog", "-b", "blog", type=str, required=True, help="The slug ID of the blog")
+@click.pass_context
+def cli_blogs_create(ctx, blog: str):
+    if blog is None:
+        raise ValueError("The blog specified is invalid or null")
+
+    return 1
 
 @cli_blogs.command("delete")
 @click.option("--blog", "-b", "blog", type=str, required=True, help="The slug ID of the blog")

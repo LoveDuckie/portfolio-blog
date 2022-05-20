@@ -7,8 +7,26 @@ A command-line Python tool that is responsible for exporting and publishing arti
 Find below the number of platforms that are currently supported.
 
 - **Hashnode**
+  - **Website:** [https://hashnode.com/](https://hashnode.com/)
 - **Dev.to**
+  - **Website:** [https://dev.to/](https://dev.to/)
 - **Silverstripe**
+  - **Website:** [https://silverstripe.org](https://www.silverstripe.org/)
+
+## Uploaders
+
+An "Uploader" is a Python type responsible for uploading a blog to a target platform after it has been rendered or rasterized. It forms part of a pipeline for rendering and ultimately publishing the blog content to the platform specified.
+
+## Exporters
+
+An "Exporter" is a Python type responsible for rendering or producing file in another format from Markdown source.
+
+- **PDF**
+  - Render a PDF document form a Markdown source file. The rendered output is customizable with various parameters.
+- **HTML**
+  - Render a HTML page or collection of pages from a Markdown source file.
+- **Silverstripe (HTML)**
+  - Renders the Markdown source file as a HTML page, with syntax highlighting and image assets available. Supports the [silverstripe/blog](https://addons.silverstripe.org/add-ons/silverstripe/blog) module.
 
 ## Structure
 
@@ -22,7 +40,7 @@ Insert example here.
 
 This tool is installable from PyPi by running the following command.
 
-```shell
+```bash
 #!/bin/bash
 
 pip install publisher
@@ -32,10 +50,24 @@ The tool should then be usable from the command-line by running the following.
 
 ### Creating a Blog Collection
 
-```shell
+```bash
 #!/bin/bash
 
 python -m publisher collections create <collection name>
+```
+
+Alternatively, the same command can be expressed as the following.
+
+```bash
+#!/bin/bash
+
+publisher collections create <collection name>
+```
+
+```bash
+#!/bin/bash
+
+publisher collections list
 ```
 
 ### Images
