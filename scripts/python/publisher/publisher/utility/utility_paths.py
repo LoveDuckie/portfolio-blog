@@ -37,6 +37,11 @@ def get_repo_root_path(*paths) -> str:
 
 
 def get_default_blogs_path() -> str:
+    """Returns the default path to where the blogs are stored in the repository.
+
+    Returns:
+        str: The absolute path to where the blogs are stored in the repository.
+    """
     return os.path.abspath(os.path.join(get_repo_root(), "blogs"))
 
 
@@ -49,7 +54,7 @@ def get_default_collections_path() -> str:
     return os.path.abspath(os.path.join(get_default_blogs_path(), "collections"))
 
 
-def get_collection_path(collection_name: str) -> str:
+def get_collection_path(collection_name: str, collections_path: str = None) -> str:
     if not collection_name:
         raise ValueError("The name of the collection is invalid or null")
     collection_slug_name = create_slug_from_name(collection_name)
@@ -69,11 +74,13 @@ def get_blog_path(blog_name: str, collection_name: str = None) -> str:
     collection_name = collection_name if collection_name is not None else "default"
     return os.path.join(get_collection_path(collection_name), blog_name)
 
+
 def get_blog_metadata_filepath(blog_name: str, collection_name: str) -> str:
     if not collection_name:
         raise ValueError("The name of the collection is invalid or null")
     blog_path = get_blog_path(blog_name, collection_name)
     return os.path.join(blog_path, ".metadata", "blog.json")
+
 
 def get_default_export_path():
     """Get the default path to where blogs are exported to

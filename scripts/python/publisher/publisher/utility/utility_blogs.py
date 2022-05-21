@@ -6,11 +6,6 @@ from publisher.utility.utility_names import create_slug_from_name
 
 from publisher.utility.utility_paths import get_blog_path, get_collection_path, get_default_collection_name, get_default_collections_path
 
-
-def get_formatted_timestamp() -> str:
-    return datetime.datetime.strftime(datetime.datetime.now(), '%d-%m-%y_%H-%M-%S')
-
-
 def is_valid_collection(collection_slug: str) -> bool:
     if collection_slug is None or not collection_slug:
         raise ValueError("The blog collection slug name is invalid or null")
@@ -42,7 +37,28 @@ def is_valid_blog(blog_slug: str, collection_slug: str = "default") -> bool:
         blog_collection_path, "collection.json")
 
 
-def create_blog(blog_name: str, collection_name: str = None):
+def create_blog_paths(target_path: str) -> None:
+    paths = ['assets', '.metadata']
+    if target_path is None:
+        raise ValueError("The path was not specified. Unable to continue.")
+    
+    if not os.path.isabs(target_path):
+        raise IOError(f"The path \"{target_path}\" is not an absolute path. Unable to continue.")
+    
+    if not os.path.exists(target_path):
+        os.makedirs(target_path)
+    
+    for path in paths:
+        os.makedirs(os.path.join(target_path, path))
+   
+
+def create_collections_paths(target_path: str) -> None:
+    
+    paths = ['assets', '.metadata', 'blogs']
+    return
+
+
+def create_blog(blog_name: str, collection_name: str = None, collections_path: str = None):
     collection_name = collection_name if collection_name is not None else "default"
     blog_path = get_blog_path(blog_name, collection_name)
     if not os.path.exists(blog_path):
@@ -55,10 +71,11 @@ def create_blog(blog_name: str, collection_name: str = None):
             os.makedirs(new_path)
 
 
-def create_collection(collection_name: str):
+def create_collection(collection_name: str, collections_path: str = None):
     if collection_name is None:
         raise ValueError("The collection name is invalid or null")
-    collection_path = get_collection_path(collection_name)
+    collections_path = collections_path if collections_path is not None else get_default_collections_path()
+    collection_path = get_collection_path(collection_name, collections_path)
     if not os.path.exists(collection_path):
         os.makedirs(collection_path)
 
