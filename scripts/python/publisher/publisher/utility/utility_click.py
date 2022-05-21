@@ -12,6 +12,7 @@ def write_debug(msg):
 def write_error(msg):
     click.echo(click.style(msg, fg='red'))
 
+
 def write_success(msg):
     click.echo(click.style(msg, fg='green'))
 

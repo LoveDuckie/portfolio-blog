@@ -10,7 +10,7 @@ import argparse
 import json
 from typing import List
 
-from publisher.utility.utility_blogs import get_formatted_timestamp, create_slug_from_name
+from publisher.utility.utility_blogs import get_formatted_timestamp
 from publisher.utility.utility_paths import get_collection_path
 
 
@@ -142,15 +142,6 @@ def get_all_blog_collection():
     return
 
 
-def create_blog(blog_name, blog_collection_name='default'):
-    if blog_name is None or blog_name == '':
-        raise ValueError("The blog name is invalid or null")
-    if blog_collection_name is None or blog_collection_name == '':
-        raise ValueError("The blog name is invalid or null")
-
-    blog_slug_name = create_slug_from_name(blog_name)
-    if blog_slug_name is None or blog_slug_name == '':
-        raise ValueError("The blog slug name is invalid or null")
 
 
 def export_blog(blog_name, blog_collection_name='default'):

@@ -11,13 +11,36 @@ class BlogMetadata(BaseModel):
     summary: str
     slug: str
     tags: Optional[List[str]]
-    path: Optional[str]
+    filepath: Optional[str]
 
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
 
     @classmethod
-    def load_blog_metadata(cls, metadata_filepath: str) -> BlogMetadata:
+    def create(cls, metadata_filepath: str) -> BlogMetadata:
+        if metadata_filepath is None:
+            raise ValueError(
+                "The filepath to the metadata is invalid or null.")
+        return
+
+    def load_blog(self) -> Blog:
+        return Blog(self)
+
+    @classmethod
+    def load(cls, metadata_filepath: str) -> BlogMetadata:
+        if metadata_filepath is None:
+            raise ValueError(
+                "The filepath to the metadata is invalid or null.")
+        return
+
+    def save(self, metadata_filepath: str = None):
+        metadata_filepath = metadata_filepath if metadata_filepath is not None else self.filepath
+        if not metadata_filepath:
+            raise ValueError(
+                "The metadata file path is invalid or null. Unable to continue.")
+
+    @classmethod
+    def load(cls, metadata_filepath: str) -> BlogMetadata:
         """The load the metadata file
 
         Args:

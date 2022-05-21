@@ -3,10 +3,10 @@ import sys
 from time import sleep
 from publisher.logging.publisher_logger import get_logger
 import rich_click as click
-from publisher.utility.utility_blogs import is_valid_collection
-from publisher.utility.utility_click import write_error
+from publisher.utility.utility_blogs import create_blog, get_blogs, is_valid_collection
+from publisher.utility.utility_click import write_error, write_info, write_success
 from publisher.utility.utility_names import create_slug_from_name
-from publisher.utility.utility_paths import get_default_collection_name, get_default_collections_path
+from publisher.utility.utility_paths import get_default_collection_name
 
 
 click.rich_click.SHOW_ARGUMENTS = True
@@ -28,43 +28,70 @@ def cli_configure(ctx):
     pass
 
 
-@cli.group("blogs", help="Manage singular blogs")
-@click.option("--collection", "-c", "collection", type=str, required=False, default=get_default_collection_name(), help="The slug ID of the blog collection")
+@cli.group("blogs", help="Manage singular blogs.")
+@click.option("--collection-id", "-c", "collection_id", type=str, required=False, default=get_default_collection_name(), help="The slug ID of the blog collection")
 @click.pass_context
-def cli_blogs(ctx, collection: str):
-    if collection is None:
+def cli_blogs(ctx, collection_id: str):
+    if collection_id is None:
         raise ValueError("The collection ID is invalid or null")
+
+    ctx.ensure_object(dict)
+    ctx.obj['collection_id'] = collection_id
 
 
 @cli_blogs.command("create", help="Create a new blog in a collection")
+@click.option("--blog-name", type=str, default=None, required=True, prompt_required=True, prompt=True, help="The name of the blog to create.")
 @click.pass_context
-def cli_blogs_create(ctx):
-    pass
+def cli_blogs_create(ctx, blog_name: str):
+    if blog_name is None:
+        raise ValueError(
+            "The name of the blog is invalid or null. Unable to continue.")
+
+    collection_id: str = ctx.obj['collection_id']
+    blog_id: str = create_slug_from_name(blog_name)
+    write_info(f"Creating: \"{blog_id}\"")
+    create_blog(blog_id, collection_id)
+
+    write_success("Done")
+
 
 @cli_blogs.command("open", help="Open an existing blog from the collection specified.")
-@click.option("--blog", "-b", "blog", type=str, required=True, help="The slug ID of the blog")
+@click.option("--blog-id", "-b", "blog_id", type=str, required=True, help="The slug ID of the blog")
 @click.pass_context
-def cli_blogs_create(ctx, blog: str):
-    if blog is None:
-        raise ValueError("The blog specified is invalid or null")
+def cli_blogs_create(ctx, blog_id: str):
+    if blog_id is None:
+        raise ValueError("The blog I specified is invalid or null")
 
+    write_success("Done")
     return 1
 
-@cli_blogs.command("delete")
-@click.option("--blog", "-b", "blog", type=str, required=True, help="The slug ID of the blog")
+
+@cli_blogs.command("delete", help="Delete an existing blog from a collection.")
+@click.option("--blog-id", "-b", "blog_id", type=str, required=True, help="The slug ID of the blog")
 @click.pass_context
-def cli_blogs_delete(ctx, blog: str):
-    if blog is None:
-        raise ValueError("The blog specified is invalid or null")
+def cli_blogs_delete(ctx, blog_id: str):
+    if blog_id is None:
+        raise ValueError("The blog ID is invalid or null")
+    write_success("Done")
+
+    return 1
 
 
 @cli_blogs.command("list", help="List all blogs.")
 @click.pass_context
 def cli_blogs_list(ctx):
-    pass
+    collection_id = ctx.obj['collection_id']
+    blogs = get_blogs(collection_id)
+    if not blogs:
+        raise ValueError("The blogs found are invalid or null")
+
+    write_info(f"Blogs found in collection \"{collection_id}\"")
+    for blog in blogs:
+        write_info(f"Blog: \"{blog.name}\"")
 
 
 @cli.group("collections", help="Manage collections of blogs.")
+@click.option("--path","-p","path",type=str,help="The absolute path to where collections are stored.")
 @click.pass_context
 def cli_collections(ctx):
     pass
@@ -148,9 +175,9 @@ def cli_upload_collection(ctx):
 
 
 @cli.group("export", help="Render the blog to some kind of format.")
-@click.option("--exporter", type=str, help="The type of exporter to use")
-@click.option("--force", "-f", "force", is_flag=True, help="The type of exporter to use")
-@click.option("--path", type=str, help="The output path for the exporter (where relevant)")
+@click.option("--exporter", type=str, help="The type qualification for the exporter to use.")
+@click.option("--force", "-f", "force", is_flag=True, help="The type of exporter to use.")
+@click.option("--path", type=str, help="The output path for the exporter (where relevant).")
 @click.pass_context
 def cli_export(ctx):
     return

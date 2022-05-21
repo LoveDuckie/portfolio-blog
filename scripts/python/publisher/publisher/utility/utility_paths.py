@@ -62,12 +62,18 @@ def get_collection_metadata_filepath(collection_name: str) -> str:
     if not collection_name:
         raise ValueError("The name of the collection is invalid or null")
     collection_path = get_collection_path(collection_name)
+    return os.path.join(collection_path, ".metadata", "collection.json")
 
 
 def get_blog_path(blog_name: str, collection_name: str = None) -> str:
     collection_name = collection_name if collection_name is not None else "default"
     return os.path.join(get_collection_path(collection_name), blog_name)
 
+def get_blog_metadata_filepath(blog_name: str, collection_name: str) -> str:
+    if not collection_name:
+        raise ValueError("The name of the collection is invalid or null")
+    blog_path = get_blog_path(blog_name, collection_name)
+    return os.path.join(blog_path, ".metadata", "blog.json")
 
 def get_default_export_path():
     """Get the default path to where blogs are exported to
@@ -119,7 +125,7 @@ def get_default_config_filepath() -> str:
 
 def get_default_user_config_filepath() -> str:
     """Get the default user configuration file path
-+
++F
     Returns:
         str: Returns the absolute path to the user configuration path
     """

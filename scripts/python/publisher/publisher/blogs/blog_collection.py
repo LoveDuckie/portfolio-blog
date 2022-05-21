@@ -18,7 +18,22 @@ class BlogCollectionMetadata(BaseModel):
         super().__init__(**data)
 
     @classmethod
-    def load_metadata(cls, metadata_filepath: str) -> BlogCollectionMetadata:
+    def create(cls, metadata_filepath: str, **kwargs) -> BlogCollectionMetadata:
+        if metadata_filepath is None:
+            raise ValueError("The metadata file path is invalid or null")
+        
+        metadata_path = os.path.dirname(metadata_filepath)
+        if not os.path.exist(metadata_path):
+            raise IOError(f"The path {metadata_path} does not exist.")
+        
+        os.makedirs(metadata_path)
+        collection_metadata = BlogCollectionMetadata(**kwargs)
+        collection_metadata.save(metadata_filepath)
+        
+        return
+
+    @classmethod
+    def load(cls, metadata_filepath: str) -> BlogCollectionMetadata:
         if metadata_filepath is None:
             raise ValueError("The metadata filepath was not correctly defined")
 
@@ -41,6 +56,10 @@ class BlogCollectionMetadata(BaseModel):
             filepath = self.filepath
         
         content = json.dumps(self)
+        if not content:
+            raise ValueError("The content is invalid or null")
+        with open(filepath, 'w') as f:
+            f.write(content)
         
         
 
