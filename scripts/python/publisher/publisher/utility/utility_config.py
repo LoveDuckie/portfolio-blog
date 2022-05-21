@@ -4,6 +4,10 @@ from typing import Any
 from publisher.utility.utility_paths import get_default_config_filepath, get_default_user_config_filepath
 
 
+def _get_config_env_map() -> dict[str, str]:
+    return []
+
+
 def _get_config() -> ConfigParser:
     config_parser = ConfigParser()
     config_parser.read(get_default_config_filepath())
@@ -14,6 +18,12 @@ def _get_user_config() -> ConfigParser:
     config_parser = ConfigParser()
     config_parser.read(get_default_user_config_filepath())
     return config_parser
+
+
+def get_config_section_properties(property_section: str):
+    if property_section is None:
+        raise ValueError("The property section is ivnalid or null")
+    return
 
 
 def has_config_property(property_section: str, property_name: str) -> bool:

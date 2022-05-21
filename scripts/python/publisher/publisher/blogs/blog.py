@@ -9,19 +9,22 @@ class BlogMetadata(BaseModel):
     name: str
     checksum: str
     summary: str
-    slug: str
+    slug: str  # The ID or identifier
     tags: Optional[List[str]]
-    filepath: Optional[str]
+    path: str  # The path to where the blog is located.
+    filepath: str
 
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
 
     @classmethod
-    def create(cls, metadata_filepath: str) -> BlogMetadata:
+    def create(cls, metadata_filepath: str, **kwargs) -> BlogMetadata:
         if metadata_filepath is None:
             raise ValueError(
                 "The filepath to the metadata is invalid or null.")
-        return
+
+        metadata = cls(**kwargs)
+        return metadata
 
     def load_blog(self) -> Blog:
         return Blog(self)
@@ -78,6 +81,7 @@ class Blog:
         if metadata is None:
             raise ValueError("The metadata for this blog is invalid or null")
         self._metadata = metadata
+        self._loaded = False
         super().__init__()
 
     @property
@@ -106,6 +110,8 @@ class Blog:
 
     @property
     def content(self):
+        if self._loaded == False:
+            return
         return self._content
 
     @property
