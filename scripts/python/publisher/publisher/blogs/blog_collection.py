@@ -9,6 +9,7 @@ class BlogCollectionMetadata(BaseModel):
     name: str
     description: str
     summary: str
+    path: str
     filepath: Optional[str]
     tags: Optional[List[str]]
     metadata: dict[str, dict]

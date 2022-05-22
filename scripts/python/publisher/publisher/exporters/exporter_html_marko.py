@@ -9,7 +9,7 @@ from publisher.logging.publisher_logger import get_logger
 logger = get_logger()
 
 
-class HtmlExporter(ExporterInterface):
+class HtmlMarkoExporter(ExporterInterface):
     def __init__(self, blog: Blog, *args, **kwargs) -> None:
         params = ['stylesheets']
         for key in kwargs:

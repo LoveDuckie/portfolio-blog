@@ -7,11 +7,29 @@ import os
 from publisher.exporters.exporter_interface import ExporterInterface
 
 
+def get_exporter_modules_map() -> dict[str, str]:
+    return {}
+
+
 def get_exporter_modules() -> List[str]:
     return list(map(lambda x: x.name, filter(lambda x: not x.name.endswith("interface") and not x.ispkg, pkgutil.iter_modules([os.path.dirname(exporters.__file__)]))))
 
 
 def create_exporter(exporter_type: str, **kwargs) -> ExporterInterface:
+    """Instantiate the exporter from the type definition as a string
+
+    Args:
+        exporter_type (str): The fully qualified definition for the exporter type.
+
+    Raises:
+        ValueError: If the exporter type was not defined.
+        ValueError: If it's not a fully qualified type declaration.
+        ValueError: If the module instane is invalid.
+        ValueError: If the exporter interface type was not retrievable from the module instance.
+
+    Returns:
+        ExporterInterface: The instantiated exporter.
+    """
     if exporter_type is None:
         raise ValueError("The exporter type is invalid or null")
 

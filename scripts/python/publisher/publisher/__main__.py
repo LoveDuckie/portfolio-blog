@@ -4,11 +4,12 @@ from typing import List
 from publisher.logging.publisher_logger import get_logger
 import traceback
 import rich_click as click
-from publisher.utility.utility_blogs import create_blog, get_blogs, is_valid_collection
+from publisher.utility.utility_blogs import create_blog, create_collection, get_blogs, is_valid_collection
 from publisher.utility.utility_click import write_error, write_info, write_success
 from publisher.utility.utility_exporters import get_exporter_modules
 from publisher.utility.utility_names import create_slug_from_name
 from publisher.utility.utility_paths import get_default_collection_name, get_default_collections_path
+from publisher.utility.utility_tests import get_tests_path
 
 
 click.rich_click.SHOW_ARGUMENTS = True
@@ -48,6 +49,7 @@ def validate_collection(ctx, param, value):
 def cli(ctx):
     ctx.ensure_object(dict)
 
+
 @cli.group("config", help="Modify the behaviour of the publisher tool.")
 @click.pass_context
 def cli_config(ctx):
@@ -56,19 +58,24 @@ def cli_config(ctx):
 
 
 @cli.group("tests", help="Run any of the available unit tests.")
+@click.pass_context
 def cli_tests(ctx):
     if ctx is None:
         raise ValueError("The context object is invalid or null")
 
 
 @cli_tests.command("list", help="List all available tests that can be used")
-@click.option("--tests-path", type=str, help="The absolute path to where unit tests are defined.")
+@click.option("--tests-path", "-t", "tests_path", type=str, default=get_tests_path(), help="The absolute path to where unit tests are defined.")
+@click.pass_context
 def cli_tests_list(ctx, tests_path: str):
     if not tests_path:
         raise ValueError("The tests path is invalid or null")
 
     if not os.path.isabs(tests_path):
         pass
+
+    if not os.path.exists(tests_path):
+        raise IOError(f"Failed: unable to find the tests \"{tests_path}\"")
     return
 
 
@@ -114,18 +121,17 @@ def cli_blogs_create(ctx, blog_name: str):
 
 
 @cli_blogs.command("open", help="Open an existing blog from the collection specified.")
-@click.option("--blog-id", "-b", "blog_id", type=str, required=True, help="The slug ID of the blog")
+@click.option("--blog-id", "-b", "blog_id", type=str, required=True, help="The slug ID of the blog.")
 @click.pass_context
 def cli_blogs_create(ctx, blog_id: str):
     if blog_id is None:
-        raise ValueError("The blog I specified is invalid or null")
-
+        raise ValueError("The blog ID specified is invalid or null")
     write_success("Done")
     return 1
 
 
 @cli_blogs.command("delete", help="Delete an existing blog from a collection.")
-@click.option("--blog-id", "-b", "blog_id", type=str, required=True, help="The slug ID of the blog")
+@click.option("--blog-id", "-b", "blog_id", type=str, required=True, help="The slug ID of the blog.")
 @click.pass_context
 def cli_blogs_delete(ctx, blog_id: str):
     if blog_id is None:
@@ -167,6 +173,8 @@ def cli_collections(ctx, path: str):
 @click.option("--short", "-s", "short", is_flag=True, required=False, help="Display a shorter output from the list of collections.")
 @click.pass_context
 def cli_collections_list(ctx, short: bool):
+    if 'collections_path' not in ctx.obj:
+        raise KeyError("Failed: unable to find the path to collections")
     collections_path = ctx.obj['collections_path']
     if collections_path is None:
         raise ValueError(
@@ -176,7 +184,7 @@ def cli_collections_list(ctx, short: bool):
 
 
 @cli_collections.command("delete", help="Delete the collections specified.")
-@click.option("--name", "-n", "names", type=str, multiple=True, required=True, help="The slug ID(s) of he collection(s) to delete.")
+@click.option("--name", "-n", "names", type=str, prompt="Name", multiple=True, required=True, help="The slug ID(s) of he collection(s) to delete.")
 @click.pass_context
 def cli_collections_delete(ctx, names: List[str]):
     if not names:
@@ -184,16 +192,32 @@ def cli_collections_delete(ctx, names: List[str]):
 
 
 @cli_collections.command("create", help="Create the collection specified.")
-@click.option("--name", "-n", "names", required=True, prompt=True, prompt_required=True, multiple=True, type=str, help="The name(s) of the collection to create.")
+@click.option("--name", "-n", "names", required=True, prompt="Names", prompt_required=True, multiple=True, type=str, help="The name(s) of the collection to create.")
 def cli_collections_create(ctx, names: List[str]):
     if names is None:
         raise ValueError("The name is invalid or null")
 
-    collection_slug_name = create_slug_from_name(names)
+    if 'collections_path' not in ctx.obj:
+        raise KeyError("Failed: unable to find the path to collections")
 
-    if is_valid_collection(collection_slug_name):
-        write_error(f"The collection \"{names}\" already exists")
-        return 1
+    collections_path = ctx.obj['collections_path']
+
+    if collections_path is None:
+        raise ValueError(
+            "The collections path is invalid or null. Unable to continue.")
+
+    if not os.path.exists(collections_path):
+        raise IOError(
+            f"Failed: unable to find the path \"{collections_path}\"")
+
+    for name in names:
+        collection_slug_name = create_slug_from_name(name)
+
+        if is_valid_collection(collection_slug_name):
+            write_error(f"The collection \"{names}\" already exists")
+            return 1
+
+        create_collection(collection_slug_name, collections_path)
 
     write_success("Done")
 
@@ -209,7 +233,7 @@ def cli_config_publisher(parameters: List[str]):
 
 @cli_config.command("exporter")
 @click.option("--type", "-t", type=str, help="The absolute type path for the exporter.")
-@click.option("--set", '-s', "parameters", type=str, required=True, prompt_required=True, help="The parameters to set, as key/value pairs.")
+@click.option("--parameter", '-p', "parameters", type=str, required=True, prompt_required=True, help="The parameters to set, as key/value pairs.")
 @click.pass_context
 def cli_config_exporter(parameters: List[str]):
     for parameter in parameters:
@@ -219,15 +243,13 @@ def cli_config_exporter(parameters: List[str]):
 
 @cli_config.command("uploader")
 @click.option("--type", "-t", type=str, help="The absolute type path for the uploader.")
-@click.option("--set", '-s', "parameters", type=str, required=True, prompt_required=True, default=[], help="The parameters to set, as key/value pairs.")
+@click.option("--parameter", '-p', "parameters", type=str, required=True, prompt_required=True, default=[], help="The parameters to set, as key/value pairs.")
 @click.pass_context
 def cli_config_exporter(parameters: List[str]):
-    # sourcery skip: raise-specific-error
     if parameters is None:
         raise ValueError("The parameters are invalid or null")
     if not any(parameters):
         raise Exception("No parameters were found.")
-    return
 
 
 @cli.group("upload", help="Upload a collection of blogs or a single blog.")
@@ -257,10 +279,16 @@ def cli_upload_collection(ctx, collections_path: str):
 @cli.group("export", help="Render the blog out to a path specified.")
 @click.option("--exporter", type=click.Choice(get_exporter_modules(), case_sensitive=True), help="The type qualification for the exporter to use.")
 @click.option("--force", "-f", "force", is_flag=True, help="Overwrite the blog if there's one already.")
-@click.option("--path", "-p", "path", type=str, help="The output path for the exporter (where relevant).")
+@click.option("--output-path", "-p", "output_path", type=str, help="The output path for the exporter (where relevant).")
 @click.pass_context
 def cli_export(ctx, exporter: str, force: bool, path: str):
     ctx.ensure_object(dict)
+
+    if path is None:
+        raise ValueError("The path is invalid or null")
+
+    if exporter is None:
+        raise ValueError("The exporter type to use is invalid or null")
 
 
 if __name__ == "__main__":

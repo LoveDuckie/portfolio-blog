@@ -1,38 +1,44 @@
 import os
 from typing import List
 from publisher.blogs.blog import BlogMetadata
-from publisher.blogs.blog_collection import BlogCollection
+from publisher.blogs.blog_collection import BlogCollection, BlogCollectionMetadata
 from publisher.utility.utility_names import create_slug_from_name
 
-from publisher.utility.utility_paths import get_blog_path, get_collection_path, get_default_collection_name, get_default_collection_path, get_default_collections_path
+from publisher.utility.utility_paths import get_blog_path, get_collection_metadata_filepath, get_collection_path, get_default_collection_name, get_default_collections_path
+
+_collection_dirs = ['.metadata', 'assets', 'blogs']
+_blog_dirs = ['.metadata', 'assets']
 
 
-def is_valid_collection(collection_slug: str, collections_path: str = get_default_collections_path()) -> bool:
-    if collection_slug is None or not collection_slug:
+def is_valid_collection(collection_id: str, collections_path: str = get_default_collections_path()) -> bool:
+    if collection_id is None or not collection_id:
         raise ValueError("The blog collection slug name is invalid or null")
 
     if not os.path.exists(collections_path):
-        raise IOError(
-            f'The path \"{collections_path}\" was not found.')
+        return False
 
     return True
 
 
-def is_valid_blog(blog_slug: str, collection_slug: str = get_default_collection_name()) -> bool:
+def is_valid_blog(blog_slug: str, collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> bool:
     # sourcery skip: raise-specific-error
     if blog_slug is None:
         raise ValueError("The blog slug name is invalid or null")
 
-    if not is_valid_collection(collection_slug):
+    if not is_valid_collection(collection_id):
         raise Exception("The blog collection slug name is invalid or null")
 
-    collection_path = get_collection_path(collection_slug, blog_slug)
+    collection_path = get_collection_path(collection_id, collections_path)
     if not os.path.exists(collection_path):
-        raise IOError(
-            f"The path \"{collection_path}\" does not exist. Unable to continue.")
+        return False
 
     collection_metadata_filepath = os.path.join(
         collection_path, "collection.json")
+
+    if not os.path.exists(collection_metadata_filepath):
+        return False
+
+    return True
 
 
 def create_blog_paths(target_path: str) -> None:
@@ -61,20 +67,15 @@ def create_blog_paths(target_path: str) -> None:
 
 
 def create_collections_paths(target_path: str) -> None:
-    paths = ['assets', '.metadata', 'blogs']
+    paths: List[str] = ['assets', '.metadata', 'blogs']
     if target_path is None:
         raise ValueError("The target path is invalid or null")
-    return
 
 
-def create_blog(blog_name: str, collection_name: str = None, collections_path: str = get_default_collections_path()):
-    if blog_name is None or not blog_name:
-        raise ValueError("The blog name is invalid or null")
-    if collection_name is None or not collection_name:
-        raise ValueError("The blog name is invalid or null")
-
-    collection_name = collection_name if collection_name is not None else get_default_collection_name()
-    blog_path = get_blog_path(blog_name, collection_name, collections_path)
+def create_blog(blog_id: str, collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()):
+    if not blog_id:
+        raise ValueError("The blog ID is invalid or null")
+    blog_path = get_blog_path(blog_id, collection_id, collections_path)
 
     if not os.path.exists(blog_path):
         os.makedirs(blog_path)
@@ -85,36 +86,55 @@ def create_blog(blog_name: str, collection_name: str = None, collections_path: s
         if not os.path.exists(new_path):
             os.makedirs(new_path)
 
-    blog_slug = create_slug_from_name(blog_name)
+    blog_slug = create_slug_from_name(blog_id)
     if blog_slug is None or blog_slug == '':
         raise ValueError("The blog slug name is invalid or null")
 
-    create_blog_paths(get_blog_path(blog_name, collection_name))
+    create_blog_paths(get_blog_path(blog_id, collection_id))
 
 
-def create_collection(collection_name: str, collections_path: str = None):
-    if collection_name is None:
+def create_collection(collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()):
+    """Create the blog collection
+
+    Args:
+        collection_name (str): The name or slug name of the collection
+        collections_path (str, optional): The absolute path to where the blog collections are. Defaults to get_default_collections_path().
+
+    Raises:
+        ValueError: The collection name is invalid or null.
+        ValueError: The blog collection is not considered valid.
+    """
+    if collection_id is None:
         raise ValueError("The collection name is invalid or null")
-    collections_path = collections_path if collections_path is not None else get_default_collections_path()
-    collection_path = get_collection_path(collection_name, collections_path)
+
+    collection_id = create_slug_from_name(collection_id)
+
+    if is_valid_collection(collection_id, collections_path):
+        raise ValueError(f"The \"{collection_id}\" already exists.")
+
+    collection_path = get_collection_path(collection_id, collections_path)
+
     if not os.path.exists(collection_path):
         os.makedirs(collection_path)
 
     paths = ['assets', '.metadata']
+
     for path in paths:
         new_path = os.path.join(collection_path, path)
         if not os.path.exists(new_path):
             os.makedirs(new_path)
 
+    create_collection_metadata_file(collection_id, collections_path, True)
 
-def create_collection_metadata_file(collection_name: str, collections_path: str = get_default_collections_path(), force: bool = False):
-    if collection_name is None:
+
+def create_collection_metadata_file(collection_id: str, collections_path: str = get_default_collections_path(), force: bool = False):
+    if collection_id is None:
         raise ValueError("The collection name is invalid or null")
 
-    if not is_valid_collection(collection_name, collections_path):
-        create_collection(collection_name, collections_path)
+    if not is_valid_collection(collection_id, collections_path):
+        create_collection(collection_id, collections_path)
 
-    collection_path = get_collection_path(collection_name, collections_path)
+    collection_path = get_collection_path(collection_id, collections_path)
     if not collection_path:
         raise ValueError(
             "The absolute path to the collection is invalid or null")
@@ -133,14 +153,15 @@ def get_collection(collection_id: str, collections_path: str = get_default_colle
     if collections_path is None:
         raise ValueError("The path specified is invalid or null")
 
-    return
+    collection_metadata_filepath = get_collection_metadata_filepath(
+        collection_id, collections_path)
+    collection_metadata = BlogCollectionMetadata.load(
+        collection_metadata_filepath)
+    if collection_metadata is None:
+        raise ValueError("The collection metadata is invalid or null")
+
+    return BlogCollection(collection_metadata)
 
 
-def get_blogs(collection_name: str = None, collection_path: str = get_default_collection_path()) -> List:
-    collection_name = collection_name if collection_name is not None else get_default_collection_name()
-
-    collection_path: str = get_collection_path(collection_name)
-    if collection_path is None:
-        raise ValueError("The collection path is invalid or null")
-
-    return [BlogMetadata.load() for _ in os.listdir(collection_path)]
+def get_blogs(collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> List:
+    return [BlogMetadata.load() for _ in os.listdir(collections_path)]
