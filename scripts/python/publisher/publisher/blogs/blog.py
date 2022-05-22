@@ -23,6 +23,10 @@ class BlogMetadata(BaseModel):
             raise ValueError(
                 "The filepath to the metadata is invalid or null.")
 
+        metadata_path = os.path.dirname(metadata_filepath)
+        if not os.path.exists(metadata_path):
+            os.makedirs(metadata_path)
+
         metadata = cls(**kwargs)
         return metadata
 

@@ -21,8 +21,6 @@ class HtmlExporter(ExporterInterface):
 
         if not hasattr(self,"blog"):
             raise ValueError("Failed to find the blog attribute in the exporter")
-        
-        
 
         rendered_html = markdown.markdown("",extensions=[])
         if rendered_html is None:

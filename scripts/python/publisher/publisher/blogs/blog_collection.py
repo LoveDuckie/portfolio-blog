@@ -11,7 +11,7 @@ class BlogCollectionMetadata(BaseModel):
     summary: str
     filepath: Optional[str]
     tags: Optional[List[str]]
-    metadata: dict[str,dict]
+    metadata: dict[str, dict]
     slug: str
 
     def __init__(__pydantic_self__, **data: Any) -> None:
@@ -21,15 +21,15 @@ class BlogCollectionMetadata(BaseModel):
     def create(cls, metadata_filepath: str, **kwargs) -> BlogCollectionMetadata:
         if metadata_filepath is None:
             raise ValueError("The metadata file path is invalid or null")
-        
+
         metadata_path = os.path.dirname(metadata_filepath)
         if not os.path.exist(metadata_path):
-            raise IOError(f"The path {metadata_path} does not exist.")
-        
+            raise IOError(f"The path \"{metadata_path}\" does not exist.")
+
         os.makedirs(metadata_path)
         collection_metadata = BlogCollectionMetadata(**kwargs)
         collection_metadata.save(metadata_filepath)
-        
+
         return
 
     @classmethod
@@ -49,19 +49,16 @@ class BlogCollectionMetadata(BaseModel):
             raw = f.read()
 
         return BlogCollectionMetadata.parse_raw(raw)
-    
-    
+
     def save(self, filepath: str = None):
         if filepath is None and hasattr(self, "filepath"):
             filepath = self.filepath
-        
+
         content = json.dumps(self)
         if not content:
             raise ValueError("The content is invalid or null")
         with open(filepath, 'w') as f:
             f.write(content)
-        
-        
 
 
 class BlogCollection:
@@ -86,7 +83,7 @@ class BlogCollection:
     @property
     def summary(self) -> str:
         return self._summary
-    
+
     @property
     def blogs(self) -> List:
         return

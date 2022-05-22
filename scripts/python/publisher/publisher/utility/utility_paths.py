@@ -54,13 +54,20 @@ def get_default_collections_path() -> str:
     return os.path.abspath(os.path.join(get_default_blogs_path(), "collections"))
 
 
-def get_collection_path(collection_name: str, collections_path: str = None) -> str:
+def get_default_collection_path() -> str:
+    return get_collection_path(get_default_collection_name())
+
+
+def get_collection_path(collection_name: str, collections_path: str = get_default_collections_path()) -> str:
     if not collection_name:
         raise ValueError("The name of the collection is invalid or null")
-    collection_slug_name = create_slug_from_name(collection_name)
-    if not collection_slug_name:
+
+    collection_slug = create_slug_from_name(collection_name)
+
+    if not collection_slug:
         raise ValueError("The slug name is invalid or null")
-    return os.path.join(get_default_collections_path(), collection_slug_name)
+
+    return os.path.join(collections_path, collection_slug)
 
 
 def get_collection_metadata_filepath(collection_name: str) -> str:
@@ -70,8 +77,8 @@ def get_collection_metadata_filepath(collection_name: str) -> str:
     return os.path.join(collection_path, ".metadata", "collection.json")
 
 
-def get_blog_path(blog_name: str, collection_name: str = None) -> str:
-    collection_name = collection_name if collection_name is not None else "default"
+def get_blog_path(blog_name: str, collection_name: str = None, collections_path: str = get_default_collections_path()) -> str:
+    collection_name = collection_name if collection_name is not None else get_default_collection_name()
     return os.path.join(get_collection_path(collection_name), blog_name)
 
 
@@ -82,11 +89,11 @@ def get_blog_metadata_filepath(blog_name: str, collection_name: str) -> str:
     return os.path.join(blog_path, ".metadata", "blog.json")
 
 
-def get_default_export_path():
+def get_default_export_path() -> str:
     """Get the default path to where blogs are exported to
 
     Returns:
-        _type_: _description_
+        str: _description_
     """
     return os.path.abspath(os.path.join(get_repo_root(), "exported"))
 
@@ -127,7 +134,7 @@ def get_default_config_filepath() -> str:
     Returns:
         str: The absolute path to the default configuration file
     """
-    return os.path.join(get_project_root(), "publisher", "data", "config", "default.ini")
+    return os.path.join(get_project_root(), "publisher", "data", "config", get_default_config_filename())
 
 
 def get_default_user_config_filepath() -> str:
@@ -136,4 +143,4 @@ def get_default_user_config_filepath() -> str:
     Returns:
         str: Returns the absolute path to the user configuration path
     """
-    return os.path.join(get_project_root(), "config", "user.ini")
+    return os.path.join(get_project_root(), "config", get_default_user_config_filename())

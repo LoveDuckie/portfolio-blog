@@ -1,3 +1,4 @@
+import os
 import sys
 from typing import List
 from publisher.logging.publisher_logger import get_logger
@@ -19,31 +20,56 @@ logger = get_logger()
 def validate_parameter(ctx, param, value):
     if param is None:
         raise ValueError("The parameter specified is invalid or null")
+    if value is None:
+        raise ValueError("The value specified is invalid or null")
     return
 
 
 def validate_blog(ctx, param, value):
+    if ctx is None:
+        raise ValueError("The context object is invalid or null")
     if param is None:
         raise ValueError("The parameter specified is invalid or null")
+    if value is None:
+        raise ValueError("The value specified is invalid or null")
     return
 
 
 def validate_collection(ctx, param, value):
     if param is None:
         raise ValueError("The parameter specified is invalid or null")
+    if value is None:
+        raise ValueError("The value specified is invalid or null")
     return
 
 
 @click.group(help="The command-line interface for the Publisher tool.")
 @click.pass_context
 def cli(ctx):
-    pass
-
+    ctx.ensure_object(dict)
 
 @cli.group("config", help="Modify the behaviour of the publisher tool.")
 @click.pass_context
 def cli_config(ctx):
-    ctx.ensure_object(dict)
+    if ctx is None:
+        raise ValueError("The context object is invalid or null")
+
+
+@cli.group("tests", help="Run any of the available unit tests.")
+def cli_tests(ctx):
+    if ctx is None:
+        raise ValueError("The context object is invalid or null")
+
+
+@cli_tests.command("list", help="List all available tests that can be used")
+@click.option("--tests-path", type=str, help="The absolute path to where unit tests are defined.")
+def cli_tests_list(ctx, tests_path: str):
+    if not tests_path:
+        raise ValueError("The tests path is invalid or null")
+
+    if not os.path.isabs(tests_path):
+        pass
+    return
 
 
 @cli_config.command("show", help="Show the current configuration values.")
@@ -68,7 +94,7 @@ def cli_blogs(ctx, collection_id: str):
 
 
 @cli_blogs.command("create", help="Create a new blog in a collection.")
-@click.option("--blog-name", type=str, default=None, required=True, prompt_required=True, prompt=True, help="The name of the blog to create.")
+@click.option("--blog-id", type=str, default=None, required=True, prompt_required=True, prompt="Blog Name", help="The name of the blog to create.")
 @click.pass_context
 def cli_blogs_create(ctx, blog_name: str):
     if blog_name is None:
@@ -80,10 +106,10 @@ def cli_blogs_create(ctx, blog_name: str):
     write_info(f"Creating: \"{blog_id}\"")
     try:
         create_blog(blog_id, collection_id)
-    except Exception as exc:
-        tb = traceback.format_exc
+    except Exception:
+        tb = traceback.format_exc()
+        write_error(tb)
 
-    write_error(tb)
     write_success("Done")
 
 
@@ -113,6 +139,7 @@ def cli_blogs_delete(ctx, blog_id: str):
 def cli_blogs_list(ctx):
     collection_id = ctx.obj['collection_id']
     blogs = get_blogs(collection_id)
+
     if not blogs:
         raise ValueError("The blogs found are invalid or null")
 
@@ -121,6 +148,7 @@ def cli_blogs_list(ctx):
         write_info(f"Blog: \"{blog.name}\"")
 
     write_success("Done")
+    return 0
 
 
 @cli.group("collections", help="Manage collections of blogs.")
@@ -132,6 +160,7 @@ def cli_collections(ctx, path: str):
         raise ValueError("The path is invalid or null")
 
     ctx.obj['collections_path'] = path
+    return 0
 
 
 @cli_collections.command("list", help="List all the collections.")
@@ -173,7 +202,6 @@ def cli_collections_create(ctx, names: List[str]):
 @click.option("--set", '-s', "parameters", type=str, required=True, prompt_required=True, help="The parameters to set, as key/value pairs.")
 @click.pass_context
 def cli_config_publisher(parameters: List[str]):
-
     for parameter in parameters:
         write_info(parameter)
     write_success("Done")
@@ -184,7 +212,8 @@ def cli_config_publisher(parameters: List[str]):
 @click.option("--set", '-s', "parameters", type=str, required=True, prompt_required=True, help="The parameters to set, as key/value pairs.")
 @click.pass_context
 def cli_config_exporter(parameters: List[str]):
-
+    for parameter in parameters:
+        write_info(parameter)
     write_success("Done")
 
 
@@ -209,10 +238,10 @@ def cli_upload(ctx):
 
 
 @cli_upload.command("blog", help="Upload a blog.")
-@click.option('--name', '-n', type=str, default=None, required=True, prompt=True, prompt_required=True)
-@click.option('--collection', '-c', type=str, default="default", required=True, prompt=True, prompt_required=True)
+@click.option("--name", "-n", "name", type=str, default=None, required=True, prompt=True, prompt_required=True)
+@click.option("--collection-id", "-c", "collection_id", type=str, default="default", required=True, prompt=True, prompt_required=True)
 @click.pass_context
-def cli_upload_blog(ctx):
+def cli_upload_blog(ctx, name: str, collection: str):
     return
 
 
@@ -224,17 +253,14 @@ def cli_upload_collection(ctx, collections_path: str):
     if collections_path is None:
         raise ValueError("The collections path specified is invalid or null")
 
-    return
-
 
 @cli.group("export", help="Render the blog out to a path specified.")
 @click.option("--exporter", type=click.Choice(get_exporter_modules(), case_sensitive=True), help="The type qualification for the exporter to use.")
 @click.option("--force", "-f", "force", is_flag=True, help="Overwrite the blog if there's one already.")
-@click.option("--path", type=str, help="The output path for the exporter (where relevant).")
+@click.option("--path", "-p", "path", type=str, help="The output path for the exporter (where relevant).")
 @click.pass_context
-def cli_export(ctx):
+def cli_export(ctx, exporter: str, force: bool, path: str):
     ctx.ensure_object(dict)
-    return
 
 
 if __name__ == "__main__":

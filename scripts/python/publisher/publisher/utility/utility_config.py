@@ -23,7 +23,6 @@ def _get_user_config() -> ConfigParser:
 def get_config_section_properties(property_section: str):
     if property_section is None:
         raise ValueError("The property section is ivnalid or null")
-    return
 
 
 def has_config_property(property_section: str, property_name: str) -> bool:

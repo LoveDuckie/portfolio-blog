@@ -7,7 +7,7 @@ import os
 from publisher.exporters.exporter_interface import ExporterInterface
 
 
-def get_exporter_modules() -> List:
+def get_exporter_modules() -> List[str]:
     return list(map(lambda x: x.name, filter(lambda x: not x.name.endswith("interface") and not x.ispkg, pkgutil.iter_modules([os.path.dirname(exporters.__file__)]))))
 
 
@@ -27,4 +27,3 @@ def create_exporter(exporter_type: str, **kwargs) -> ExporterInterface:
     exporter_interface_type = getattr(module_instance, "")
     if not exporter_interface_type:
         raise ValueError("Failed to retrieve the interface type")
-    return
