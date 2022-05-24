@@ -1,4 +1,5 @@
 from configparser import ConfigParser
+from distutils.sysconfig import get_config_h_filename
 from typing import Any, List
 
 from publisher.utility.utility_paths import get_default_config_filepath, get_default_user_config_filepath
@@ -25,12 +26,7 @@ def _get_user_config() -> ConfigParser:
     return config_parser
 
 
-def get_config_section_properties(property_section: str) -> List:
-    if property_section is None:
-        raise ValueError("The property section is invalid or null")
-
-
-def has_config_property(property_section: str, property_name: str) -> bool:
+def is_config_property(property_section_id: str, property_id: str) -> bool:
     """Determine whether the configuration property exists in the section specified.
 
     Args:
@@ -45,25 +41,25 @@ def has_config_property(property_section: str, property_name: str) -> bool:
     Returns:
         bool: _description_
     """
-    if property_section is None:
+    if property_section_id is None:
         raise ValueError("The property section is invalid or null")
-    if property_name is None:
+    if property_id is None:
         raise ValueError("The property name is invalid or null")
 
     config_parser = _get_config()
     if config_parser is None:
         raise ValueError("The configuration parser is invalid or null")
 
-    if property_section not in config_parser:
+    if property_section_id not in config_parser:
         return False
 
-    if property_name not in config_parser[property_section]:
+    if property_id not in config_parser[property_section_id]:
         return False
 
     return True
 
 
-def get_user_config_property(property_section: str, property_name: str) -> str:
+def get_user_config_property(property_section_id: str, property_id: str) -> str:
     """Get the property value from the section specified in the user configuration.
 
     Args:
@@ -78,17 +74,17 @@ def get_user_config_property(property_section: str, property_name: str) -> str:
     Returns:
         str: Returns the stored configuration property value.
     """
-    if property_section is None:
+    if property_section_id is None:
         raise ValueError("The property section is invalid or null")
-    if property_name is None:
+    if property_id is None:
         raise ValueError("The property name is invalid or null")
 
-    if not has_config_property(property_section, property_name):
+    if not is_config_property(property_section_id, property_id):
         raise ValueError(
-            f"Unable to find the configuration value \"{property_section}.{property_name}\"")
+            f"Unable to find the configuration value \"{property_section_id}.{property_id}\"")
 
     config = _get_user_config()
-    return config[property_section][property_name]
+    return config[property_section_id][property_id]
 
 
 def get_config_property(property_section: str, property_name: str) -> Any:
@@ -97,9 +93,43 @@ def get_config_property(property_section: str, property_name: str) -> Any:
     if property_name is None:
         raise ValueError("The property name is invalid or null")
 
-    if not has_config_property(property_section, property_name):
+    if not is_config_property(property_section, property_name):
         raise ValueError(
             f"Unable to find the configuration value \"{property_section}.{property_name}\"")
 
     config = _get_config()
     return config[property_section][property_name]
+
+
+def is_config_property_section(property_section: str) -> bool:
+    if property_section is None:
+        raise ValueError(
+            "The configuration property section is invalid or null")
+
+    config = _get_config()
+    return property_section in config
+
+
+def get_config_section_properties(property_section: str) -> dict[str, str]:
+    """Retrieve a key/value dictionary of all the properties that exist in a configuration section
+
+    Args:
+        property_section (str): The name or ID of the configuration section.
+
+    Raises:
+        ValueError: If the property section is invalid or null
+
+    Returns:
+        dict: The key/value dictionary of properties
+    """
+    if property_section is None:
+        raise ValueError("The property section is invalid or null")
+
+    config_parser = _get_config()
+    if config_parser is None:
+        raise ValueError("The configuration parser is invalid or null")
+
+    if not is_config_property_section(property_section):
+        raise KeyError("The configuration property section is invalid or null")
+
+    return {key: config_parser[property_section][key] for key in config_parser[property_section]}

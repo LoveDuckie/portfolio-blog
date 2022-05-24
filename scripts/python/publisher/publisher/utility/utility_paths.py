@@ -1,12 +1,72 @@
 import os
 import subprocess
-
 from publisher.utility.utility_names import create_slug_from_name
 
 _repo_root = None
 
 
+def get_project_root():
+    """Get the absolute path to the root of the project
+
+    Returns:
+        str: The absolute path to the root of of the project
+    """
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+
+
+def get_project_path(*paths) -> str:
+    """Generate the project path based on the elements specified in the list
+
+    Returns:
+        str: The absolute path
+    """
+    return os.path.join(get_project_root(), *paths)
+
+
+def get_default_collection_name() -> str:
+    return "default"
+
+
+def get_default_user_config_filename() -> str:
+    return "user.ini"
+
+
+def get_default_config_filename() -> str:
+    return "default.ini"
+
+
+def get_default_collection_metadata_filename() -> str:
+    return "collection.json"
+
+
+def get_default_blog_metadata_filename() -> str:
+    return "blog.json"
+
+
+def get_default_config_filepath() -> str:
+    """Get the absolute path to the default configuration file
+
+    Returns:
+        str: The absolute path to the default configuration file
+    """
+    return os.path.join(get_project_root(), "publisher", "data", "config", get_default_config_filename())
+
+
+def get_default_user_config_filepath() -> str:
+    """Get the default user configuration file path
++F
+    Returns:
+        str: Returns the absolute path to the user configuration path
+    """
+    return os.path.join(get_project_root(), "config", get_default_user_config_filename())
+
+
 def _create_repo_root() -> str:
+    """Resolve the absolute path to the root of the repository.
+
+    Returns:
+        str: The absolute path to the root of the repository.
+    """
     process = subprocess.Popen(['git', 'rev-parse', '--show-toplevel'],
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
@@ -95,73 +155,35 @@ def get_blog_path(blog_id: str, collection_id: str = None, collections_path: str
     return os.path.join(get_collection_path(collection_id, collections_path), blog_id)
 
 
-def get_blog_metadata_filepath(blog_name: str, collection_name: str) -> str:
-    if not collection_name:
+def get_blog_metadata_path(blog_id: str, collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> str:
+    if blog_id is None:
+        raise ValueError("The blog ID is invalid or null")
+
+    if collection_id is None:
+        raise ValueError("The collection ID is invalid or null")
+
+
+def get_blog_metadata_filepath(blog_id: str, collection_id: str = get_default_collection_name()) -> str:
+    if not collection_id:
         raise ValueError("The name of the collection is invalid or null")
-    blog_path = get_blog_path(blog_name, collection_name)
+    blog_path = get_blog_path(blog_id, collection_id)
     return os.path.join(blog_path, ".metadata", "blog.json")
 
 
-def get_default_export_path() -> str:
-    """Get the default path to where blogs are exported to
+def get_default_export_path(*paths) -> str:
+    """Get the default export path for exporting or rendering blogs out to.
 
     Returns:
-        str: _description_
+        str: Returns the newly generaed path.
     """
-    return os.path.abspath(os.path.join(get_repo_root(), "exported"))
+    path_combined = '/'.join(paths)
+    return os.path.abspath(os.path.join(get_repo_root(), "exported", path_combined))
 
 
-def get_project_root():
-    """Get the absolute path to the root of the project
+def get_blog_export_path(blog_id: str, collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> str:
+    if blog_id is None:
+        raise ValueError("The blog is not considered valid.")
+    if collection_id is None:
+        raise ValueError("The collection is not considered valid.")
 
-    Returns:
-        str: The absolute path to the root of of the project
-    """
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-
-
-def get_project_path(*paths) -> str:
-    """Generate the project path based on the elements specified in the list
-
-    Returns:
-        str: The absolute path
-    """
-    return os.path.join(get_project_root(), *paths)
-
-
-def get_default_collection_name() -> str:
-    return "default"
-
-
-def get_default_user_config_filename() -> str:
-    return "user.ini"
-
-
-def get_default_config_filename() -> str:
-    return "default.ini"
-
-
-def get_default_collection_metadata_filename() -> str:
-    return "collection.json"
-
-
-def get_default_blog_metadata_filename() -> str:
-    return "blog.json"
-
-
-def get_default_config_filepath() -> str:
-    """Get the absolute path to the default configuration file
-
-    Returns:
-        str: The absolute path to the default configuration file
-    """
-    return os.path.join(get_project_root(), "publisher", "data", "config", get_default_config_filename())
-
-
-def get_default_user_config_filepath() -> str:
-    """Get the default user configuration file path
-+F
-    Returns:
-        str: Returns the absolute path to the user configuration path
-    """
-    return os.path.join(get_project_root(), "config", get_default_user_config_filename())
+    return get_default_export_path("collections", collection_id, "blogs", blog_id)

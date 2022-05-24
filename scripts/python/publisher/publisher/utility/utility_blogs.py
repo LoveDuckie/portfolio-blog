@@ -20,9 +20,9 @@ def is_valid_collection(collection_id: str, collections_path: str = get_default_
     return True
 
 
-def is_valid_blog(blog_slug: str, collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> bool:
+def is_valid_blog(blog_id: str, collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> bool:
     # sourcery skip: raise-specific-error
-    if blog_slug is None:
+    if blog_id is None:
         raise ValueError("The blog slug name is invalid or null")
 
     if not is_valid_collection(collection_id):
