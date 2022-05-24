@@ -176,7 +176,7 @@ def get_default_export_path(*paths) -> str:
     Returns:
         str: Returns the newly generaed path.
     """
-    path_combined = '/'.join(paths)
+    path_combined = os.sep.join(paths)
     return os.path.abspath(os.path.join(get_repo_root(), "exported", path_combined))
 
 

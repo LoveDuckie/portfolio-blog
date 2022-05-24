@@ -77,6 +77,14 @@ def create_blog_paths(target_path: str) -> None:
 
 
 def create_collections_paths(target_path: str) -> None:
+    """Create the paths for the collection
+
+    Args:
+        target_path (str): The absolute path to the target directory
+
+    Raises:
+        ValueError: If the target path was not defined.
+    """
     global _collection_dirs
     if target_path is None:
         raise ValueError("The target path is invalid or null")
