@@ -117,6 +117,7 @@ def create_collection(collection_id: str = get_default_collection_name(), collec
         ValueError: The collection name is invalid or null.
         ValueError: The blog collection is not considered valid.
     """
+    global _collection_dirs
     if collection_id is None:
         raise ValueError("The collection name is invalid or null")
 
@@ -130,9 +131,7 @@ def create_collection(collection_id: str = get_default_collection_name(), collec
     if not os.path.exists(collection_path):
         os.makedirs(collection_path)
 
-    paths = ['assets', '.metadata']
-
-    for path in paths:
+    for path in _collection_dirs:
         new_path = os.path.join(collection_path, path)
         if not os.path.exists(new_path):
             os.makedirs(new_path)
@@ -191,7 +190,7 @@ def get_blogs(collection_id: str = get_default_collection_name(), collections_pa
     for blog in os.listdir(collection_path):
         blog_metadata_filepath = get_blog_metadata_filepath(
             blog, collection_id, collections_path)
-        
+
         blog_metadata = BlogMetadata.load(blog_metadata_filepath)
         blogs.append(Blog(blog_metadata))
 
