@@ -11,8 +11,8 @@ class BlogMetadata(BaseModel):
     checksum: str
     summary: str
     tags: Optional[List[str]]
-    path: str  # The path to where the blog is located.
-    filepath: str
+    path: Optional[str]  # The path to where the blog is located.
+    filepath: Optional[str]
 
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
@@ -27,18 +27,12 @@ class BlogMetadata(BaseModel):
         if not os.path.exists(metadata_path):
             os.makedirs(metadata_path)
 
-        metadata = cls(**kwargs)
-        return metadata
+        blog_metadata = cls(**kwargs)
+        blog_metadata.save(metadata_filepath)
+        return blog_metadata
 
     def load_blog(self) -> Blog:
         return Blog(self)
-
-    @classmethod
-    def load(cls, metadata_filepath: str) -> BlogMetadata:
-        if metadata_filepath is None:
-            raise ValueError(
-                "The filepath to the metadata is invalid or null.")
-        return
 
     def save(self, metadata_filepath: str = None):
         metadata_filepath = metadata_filepath if metadata_filepath is not None else self.filepath

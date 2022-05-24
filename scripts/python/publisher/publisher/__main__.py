@@ -98,10 +98,12 @@ def cli_blogs(ctx, collection_id: str, collections_path: str):
     if collection_id is None:
         raise ValueError("The collection ID is invalid or null")
     if collections_path is None:
-        raise ValueError("The collection ID is invalid or null")
+        raise ValueError("The collections path is invalid or null")
 
     ctx.obj['collection_id'] = collection_id
     ctx.obj['collections_path'] = collections_path
+
+    write_success("Done")
 
 
 @cli_blogs.command("create", help="Create a new blog in a collection.")
@@ -122,7 +124,6 @@ def cli_blogs_create(ctx, blog_id: str):
         write_error(tb)
 
     write_success("Done")
-    return 1
 
 
 @cli_blogs.command("open", help="Open an existing blog from the collection specified.")
@@ -132,17 +133,15 @@ def cli_blogs_create(ctx, blog_id: str):
     if blog_id is None:
         raise ValueError("The blog ID specified is invalid or null")
     write_success("Done")
-    return 1
 
 
 @cli_blogs.command("delete", help="Delete an existing blog from a collection.")
-@click.option("--blog-id", "-b", "blog_id", type=str, required=True, help="The slug ID of the blog.")
+@click.option("--blog-id", "-b", "blog_id", type=str, required=True, help="The ID of the blog.")
 @click.pass_context
 def cli_blogs_delete(ctx, blog_id: str):
     if blog_id is None:
         raise ValueError("The blog ID is invalid or null")
     write_success("Done")
-    return 1
 
 
 @cli_blogs.command("list", help="List all blogs.")
@@ -159,7 +158,6 @@ def cli_blogs_list(ctx):
         write_info(f"Blog: \"{blog.name}\"")
 
     write_success("Done")
-    return 0
 
 
 @cli.group("collections", help="Manage collections of blogs.")
@@ -171,36 +169,37 @@ def cli_collections(ctx, collections_path: str):
         raise ValueError("The path is invalid or null")
 
     ctx.obj['collections_path'] = collections_path
-    return 0
 
 
-@cli_collections.command("fix")
+@cli_collections.command("fix", help="Fix the collection if there are any errors.")
 @click.option("--collection-id", "-c", "collection_id", type=str, default=get_default_collection_name(), help="The ID for the collection")
-def cli_collections_validate(ctx, collection_id: str):
-    collections_path = ctx.obj['collections_path']
-    if not collections_path:
-        raise ValueError(
-            "The absolute path to the collections is invalid or null")
-    
-    if not os.path.exists(collections_path):
-        raise ValueError("The collections path is invalid or null")
-    
-@cli_collections.command("validate")
-@click.option("--collection-id", "-c", "collection_id", type=str, default=get_default_collection_name(), help="The ID for the collection")
-@click.option("--all", "-a", "validate_all", is_flag=True, help="If all collections should be verified.")
+@click.option("--all", "-a", "validate_all", is_flag=True, help="If all collections should be fixed.")
 def cli_collections_validate(ctx, collection_id: str, validate_all: bool):
     collections_path = ctx.obj['collections_path']
     if not collections_path:
         raise ValueError(
             "The absolute path to the collections is invalid or null")
-    
+
     if not os.path.exists(collections_path):
         raise ValueError("The collections path is invalid or null")
-    
+
+
+@cli_collections.command("validate", help="Validate the collection and determine if there are any errors.")
+@click.option("--collection-id", "-c", "collection_id", type=str, default=get_default_collection_name(), help="The ID for the collection")
+@click.option("--all", "-a", "validate_all", is_flag=True, help="If all collections should be validated.")
+def cli_collections_validate(ctx, collection_id: str, validate_all: bool):
+    collections_path = ctx.obj['collections_path']
+    if not collections_path:
+        raise ValueError(
+            "The absolute path to the collections is invalid or null")
+
+    if not os.path.exists(collections_path):
+        raise ValueError("The collections path is invalid or null")
+
     error_messages = []
     for collection in os.listdir(collections_path):
         return
-    
+
     if any(error_messages):
         for msg in error_messages:
             write_error(msg)
@@ -252,7 +251,6 @@ def cli_collections_create(ctx, names: List[str]):
 
         if is_valid_collection(collection_slug_name):
             write_error(f"The collection \"{names}\" already exists")
-            return 1
 
         create_collection(collection_slug_name, collections_path)
 

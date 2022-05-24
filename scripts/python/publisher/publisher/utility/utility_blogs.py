@@ -1,6 +1,6 @@
 import os
 from typing import List
-from publisher.blogs.blog import BlogMetadata
+from publisher.blogs.blog import Blog, BlogMetadata
 from publisher.blogs.blog_collection import BlogCollection, BlogCollectionMetadata
 from publisher.utility.utility_names import create_id_from_name
 
@@ -89,15 +89,16 @@ def create_collections_paths(target_path: str) -> None:
 
 
 def create_blog(blog_id: str, collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()):
+    global _blog_dirs
     if not blog_id:
         raise ValueError("The blog ID is invalid or null")
     blog_path = get_blog_path(blog_id, collection_id, collections_path)
 
+
     if not os.path.exists(blog_path):
         os.makedirs(blog_path)
 
-    paths = ['assets', '.metadata']
-    for path in paths:
+    for path in _blog_dirs:
         new_path = os.path.join(blog_path, path)
         if not os.path.exists(new_path):
             os.makedirs(new_path)
@@ -180,4 +181,4 @@ def get_collection(collection_id: str, collections_path: str = get_default_colle
 
 
 def get_blogs(collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> List:
-    return [BlogCollectionMetadata.load(get_collection_metadata_filepath(collection_id, collections_path)) for _ in os.listdir(collections_path)]
+    return [Blog(BlogCollectionMetadata.load(get_blog_metadata_filepath(_, collection_id, collections_path))) for _ in os.listdir(get_collection_path(collection_id, collections_path))]
