@@ -1,5 +1,4 @@
 from __future__ import annotations
-from curses import meta
 import json
 import os
 from typing import Any, List, Optional
@@ -45,7 +44,7 @@ class BlogCollectionMetadata(BaseModel):
 
         if not os.path.exists(metadata_filepath):
             raise IOError(
-                "The absolute path to the metadata is invalid or null")
+                f"The absolute path to the metadata is invalid or null (\"{metadata_filepath}\")")
 
         with open(metadata_filepath, 'r') as f:
             raw = f.read()

@@ -10,10 +10,6 @@ _collection_dirs = ['.metadata', 'assets', 'blogs']
 _blog_dirs = ['.metadata', 'assets']
 
 
-def is_valid_collection_path(collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> bool:
-    return False
-
-
 def is_valid_collection(collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> bool:
     if collection_id is None or not collection_id:
         raise ValueError("The blog collection ID is invalid or null")
@@ -30,10 +26,6 @@ def is_valid_collection(collection_id: str = get_default_collection_name(), coll
         return False
 
     return True
-
-
-def is_valid_blog_path(collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> bool:
-    return False
 
 
 def is_valid_blog(blog_id: str, collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> bool:
@@ -67,7 +59,7 @@ def create_blog_paths(target_path: str) -> None:
         ValueError: The absolue target path is invalid or null
         IOError: The absolute target path does not exist
     """
-    paths = ['assets', '.metadata']
+    global _blog_dirs
     if target_path is None:
         raise ValueError("The path was not specified. Unable to continue.")
 
@@ -78,30 +70,34 @@ def create_blog_paths(target_path: str) -> None:
     if not os.path.exists(target_path):
         os.makedirs(target_path)
 
-    for path in paths:
-        os.makedirs(os.path.join(target_path, path))
+    for path in _blog_dirs:
+        new_path = os.path.join(target_path, path)
+        if not os.path.exists(new_path):
+            os.makedirs(new_path)
 
 
 def create_collections_paths(target_path: str) -> None:
-    paths: List[str] = ['assets', '.metadata', 'blogs']
+    global _collection_dirs
     if target_path is None:
         raise ValueError("The target path is invalid or null")
 
+    if not os.path.exists(target_path):
+        os.makedirs(target_path)
 
-def create_blog(blog_id: str, collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()):
+    for path in _collection_dirs:
+        continue
+
+    return
+
+
+def create_blog(blog_id: str, collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path(), **kwargs):
     global _blog_dirs
     if not blog_id:
         raise ValueError("The blog ID is invalid or null")
     blog_path = get_blog_path(blog_id, collection_id, collections_path)
 
-
     if not os.path.exists(blog_path):
         os.makedirs(blog_path)
-
-    for path in _blog_dirs:
-        new_path = os.path.join(blog_path, path)
-        if not os.path.exists(new_path):
-            os.makedirs(new_path)
 
     blog_slug = create_id_from_name(blog_id)
     if blog_slug is None or blog_slug == '':
@@ -181,4 +177,22 @@ def get_collection(collection_id: str, collections_path: str = get_default_colle
 
 
 def get_blogs(collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> List:
-    return [Blog(BlogCollectionMetadata.load(get_blog_metadata_filepath(_, collection_id, collections_path))) for _ in os.listdir(get_collection_path(collection_id, collections_path))]
+    blogs = []
+
+    collection_path = get_collection_path(collection_id, collections_path)
+    metadata_filepath = get_collection_metadata_filepath(
+        collection_id, collections_path)
+    if metadata_filepath is None:
+        raise ValueError("The metadata filepath is invalid or null")
+
+    if not os.path.exists(metadata_filepath):
+        raise IOError(
+            f"Failed: unable to find the file \"{metadata_filepath}\"")
+    for blog in os.listdir(collection_path):
+        blog_metadata_filepath = get_blog_metadata_filepath(
+            blog, collection_id, collections_path)
+        
+        blog_metadata = BlogMetadata.load(blog_metadata_filepath)
+        blogs.append(Blog(blog_metadata))
+
+    return blogs

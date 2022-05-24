@@ -6,7 +6,7 @@ import traceback
 import rich_click as click
 from publisher.utility.utility_blogs import create_blog, create_collection, get_blogs, is_valid_collection
 from publisher.utility.utility_click import write_error, write_info, write_success
-from publisher.utility.utility_exporters import get_exporter_modules
+from publisher.utility.utility_exporters import get_exporter_modules_names
 from publisher.utility.utility_names import create_id_from_name
 from publisher.utility.utility_paths import get_default_collection_name, get_default_collections_path
 from publisher.utility.utility_tests import get_tests_path
@@ -23,7 +23,6 @@ def validate_parameter(ctx, param, value):
         raise ValueError("The parameter specified is invalid or null")
     if value is None:
         raise ValueError("The value specified is invalid or null")
-    return
 
 
 def validate_blog(ctx, param, value):
@@ -33,7 +32,6 @@ def validate_blog(ctx, param, value):
         raise ValueError("The parameter specified is invalid or null")
     if value is None:
         raise ValueError("The value specified is invalid or null")
-    return
 
 
 def validate_collection(ctx, param, value):
@@ -41,7 +39,6 @@ def validate_collection(ctx, param, value):
         raise ValueError("The parameter specified is invalid or null")
     if value is None:
         raise ValueError("The value specified is invalid or null")
-    return
 
 
 @click.group(help="The command-line interface for the Publisher tool.")
@@ -72,11 +69,12 @@ def cli_tests_list(ctx, tests_path: str):
         raise ValueError("The tests path is invalid or null")
 
     if not os.path.isabs(tests_path):
-        pass
+        raise IOError(f"Failed: the path \"{tests_path}\" is invalid.")
 
     if not os.path.exists(tests_path):
-        raise IOError(f"Failed: unable to find the tests \"{tests_path}\"")
-    return
+        raise IOError(f"Failed: unable to find the tests \"{tests_path}\".")
+
+    write_success("Done")
 
 
 @cli_config.command("show", help="Show the current configuration values.")
@@ -107,9 +105,12 @@ def cli_blogs(ctx, collection_id: str, collections_path: str):
 
 
 @cli_blogs.command("create", help="Create a new blog in a collection.")
-@click.option("--blog-id", "-b", "blog_id", type=str, default=None, required=True, prompt_required=True, prompt="Blog Name", help="The name of the blog to create.")
+@click.option("--blog-id", "-i", "blog_id", type=str, default=None, required=False, prompt_required=True, prompt="Blog ID", help="The ID of the blog to create.")
+@click.option("--blog-name", "-n", "blog_name", type=str, default=None, required=True, prompt_required=True, prompt="Blog Name", help="The name of the blog to create.")
+@click.option("--blog-description", "-d", "blog_description", type=str, default=None, required=False, prompt_required=True, prompt="Blog Description", help="The description of the blog to create.")
+@click.option("--tag", "-t", "blog_tags", type=str, multiple=True, default=[], required=False, prompt_required=True, prompt="Blog Tags", help="The associative tags with this blog.")
 @click.pass_context
-def cli_blogs_create(ctx, blog_id: str):
+def cli_blogs_create(ctx, blog_id: str, blog_name: str, blog_description: str, blog_tags: List[str]):
     if blog_id is None:
         raise ValueError(
             "The name of the blog is invalid or null. Unable to continue.")
@@ -118,8 +119,9 @@ def cli_blogs_create(ctx, blog_id: str):
     blog_id: str = create_id_from_name(blog_id)
     write_info(f"Creating: \"{blog_id}\"")
     try:
-        create_blog(blog_id, collection_id)
-    except Exception:
+        create_blog(blog_id, collection_id, name=blog_name,
+                    description=blog_description, tags=blog_tags)
+    except Exception as exc:
         tb = traceback.format_exc()
         write_error(tb)
 
@@ -247,12 +249,12 @@ def cli_collections_create(ctx, names: List[str]):
             f"Failed: unable to find the path \"{collections_path}\"")
 
     for name in names:
-        collection_slug_name = create_id_from_name(name)
+        collection_id = create_id_from_name(name)
 
-        if is_valid_collection(collection_slug_name):
+        if is_valid_collection(collection_id):
             write_error(f"The collection \"{names}\" already exists")
 
-        create_collection(collection_slug_name, collections_path)
+        create_collection(collection_id, collections_path)
 
     write_success("Done")
 
@@ -313,7 +315,7 @@ def cli_upload_collection(ctx, collections_path: str):
 
 
 @cli.group("export", help="Render the blog out to a path specified.")
-@click.option("--exporter", type=click.Choice(get_exporter_modules(), case_sensitive=True), multiple=True, required=True, help="The type qualification for the exporter to use.")
+@click.option("--exporter", type=click.Choice(get_exporter_modules_names(), case_sensitive=True), multiple=True, required=True, help="The type qualification for the exporter to use.")
 @click.option("--collections-path", "-p", "collections_path", default=get_default_collections_path(), required=False, help="The absolute path to where the collections are stored.")
 @click.option("--collection-id", "-c", "collection_id", default=get_default_collection_name(), required=False, help="The ID or name of the collection to export the blog from.")
 @click.option("--blog-id", "-b", "blog_id", required=True, help="Overwrite any exported blogs if they exist already.")

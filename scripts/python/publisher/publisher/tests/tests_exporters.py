@@ -1,6 +1,6 @@
 import unittest
 
-from publisher.utility.utility_exporters import get_exporter_modules
+from publisher.utility.utility_exporters import get_exporter_modules_names
 
 
 class TestsExporters(unittest.TestCase):
@@ -8,7 +8,7 @@ class TestsExporters(unittest.TestCase):
         super().__init__(methodName)
 
     def test_create_exporters(self):
-        exporters = get_exporter_modules()
+        exporters = get_exporter_modules_names()
         self.assertTrue(exporters is not None)
         for _ in exporters:
             continue
@@ -20,7 +20,7 @@ class TestsExporters(unittest.TestCase):
         pass
 
     def test_exporters_available(self):
-        exporters = get_exporter_modules()
+        exporters = get_exporter_modules_names()
         self.assertTrue(any(exporters))
 
 

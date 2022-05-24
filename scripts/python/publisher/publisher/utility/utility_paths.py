@@ -75,10 +75,10 @@ def _create_repo_root() -> str:
 
 
 def get_repo_root() -> str:
-    """Get the absolute path to the root of the Git repository
+    """Get the absolute path to the root of the Git repository.
 
     Returns:
-        str: Returns the absolute path of the Git repository
+        str: Returns the absolute path of the Git repository.
     """
     global _repo_root
 
@@ -88,10 +88,10 @@ def get_repo_root() -> str:
 
 
 def get_repo_root_path(*paths) -> str:
-    """Get the absolute path to the newly generated path
+    """Get the absolute path to the newly generated path.
 
     Returns:
-        str: Returns the absolute path
+        str: Returns the absolute path.
     """
     return os.path.join(get_repo_root(), *paths)
 
@@ -109,7 +109,7 @@ def get_default_collections_path() -> str:
     """Get the default collections path
 
     Returns:
-        str: Returns the absolute path to the blog collections
+        str: Returns the absolute path to the blog collections.
     """
     return os.path.abspath(os.path.join(get_default_blogs_path(), "collections"))
 
@@ -118,28 +118,28 @@ def get_default_collection_path() -> str:
     """Get the default absolute path to the collection
 
     Returns:
-        str: _description_
+        str: Get the absolute path to the default collection.
     """
     return get_collection_path(get_default_collection_name())
 
 
-def get_collection_path(collection_id: str, collections_path: str = get_default_collections_path()) -> str:
+def get_collection_path(collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> str:
     if not collection_id:
         raise ValueError("The name of the collection is invalid or null")
-    collection_slug = create_id_from_name(collection_id)
-    if not collection_slug:
+    collection_id = create_id_from_name(collection_id)
+    if not collection_id:
         raise ValueError("The slug name is invalid or null")
-    return os.path.join(collections_path, collection_slug)
+    return os.path.join(collections_path, collection_id)
 
 
-def get_collection_metadata_path(collection_id: str, collections_path: str = get_default_collections_path()) -> str:
+def get_collection_metadata_path(collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> str:
     if collection_id is None:
         raise ValueError("The name of the collection is invalid or null")
     collection_id = create_id_from_name(collection_id)
     return os.path.join(collections_path, collection_id, ".metadata")
 
 
-def get_collection_metadata_filepath(collection_id: str, collections_path: str = get_default_collections_path()) -> str:
+def get_collection_metadata_filepath(collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> str:
     if collection_id is None:
         raise ValueError("The collection ID is invalid or null")
     if collections_path is None:
@@ -158,12 +158,15 @@ def get_blog_metadata_path(blog_id: str, collection_id: str = get_default_collec
     if collection_id is None:
         raise ValueError("The collection ID is invalid or null")
 
+    return os.path.join(get_blog_path(blog_id, collection_id, collections_path), ".metadata")
+
 
 def get_blog_metadata_filepath(blog_id: str, collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> str:
     if not blog_id:
         raise ValueError("The ID of the blog is invalid or null")
     if not collection_id:
         raise ValueError("The ID of the collection is invalid or null")
+
     return os.path.join(get_blog_metadata_path(blog_id, collection_id, collections_path), "blog.json")
 
 

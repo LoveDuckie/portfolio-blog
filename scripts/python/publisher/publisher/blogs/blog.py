@@ -10,6 +10,9 @@ class BlogMetadata(BaseModel):
     name: str
     checksum: str
     summary: str
+    programming_languages: Optional[List[str]]
+    technologies: Optional[List[str]]
+    platforms: Optional[List[str]]
     tags: Optional[List[str]]
     path: Optional[str]  # The path to where the blog is located.
     filepath: Optional[str]
@@ -90,17 +93,9 @@ class Blog:
     def name(self):
         return self._name
 
-    @name.setter
-    def name(self, value):
-        self._name = value
-
     @property
-    def slug(self):
-        return self._slug
-
-    @slug.setter
-    def slug(self, value):
-        self._slug = value
+    def id(self):
+        return self._id
 
     @property
     def description(self):
@@ -108,8 +103,10 @@ class Blog:
 
     @property
     def content(self):
-        if self._loaded == False:
-            return
+        if self._loaded and hasattr(self, "_content"):
+            return self._content
+
+        self._content
         return self._content
 
     @property
