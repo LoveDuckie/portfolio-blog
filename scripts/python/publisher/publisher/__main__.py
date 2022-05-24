@@ -4,10 +4,10 @@ from typing import List
 from publisher.logging.publisher_logger import get_logger
 import traceback
 import rich_click as click
-from publisher.utility.utility_blogs import create_blog, create_collection, get_blogs, is_valid_blog, is_valid_collection
+from publisher.utility.utility_blogs import create_blog, create_collection, get_blogs, is_valid_collection
 from publisher.utility.utility_click import write_error, write_info, write_success
 from publisher.utility.utility_exporters import get_exporter_modules
-from publisher.utility.utility_names import create_slug_from_name
+from publisher.utility.utility_names import create_id_from_name
 from publisher.utility.utility_paths import get_default_collection_name, get_default_collections_path
 from publisher.utility.utility_tests import get_tests_path
 
@@ -90,8 +90,8 @@ def cli_config_show(ctx, collection_id: str):
 
 
 @cli.group("blogs", help="Manage singular blogs.")
-@click.option("--collection-id", "-c", "collection_id", type=str, required=False, default=get_default_collection_name(), help="The slug ID of the blog collection.")
-@click.option("--collection-path", "-p", "collection_path", type=str, required=False, default=get_default_collections_path(), help="The path to where the collections are stored.")
+@click.option("--collection-id", "-c", "collection_id", type=str, required=False, default=get_default_collection_name(), help="The ID of the blog collection.")
+@click.option("--collection-path", "-p", "collections_path", type=str, required=False, default=get_default_collections_path(), help="The path to where the collections are stored.")
 @click.pass_context
 def cli_blogs(ctx, collection_id: str, collections_path: str):
     ctx.ensure_object(dict)
@@ -113,7 +113,7 @@ def cli_blogs_create(ctx, blog_id: str):
             "The name of the blog is invalid or null. Unable to continue.")
 
     collection_id: str = ctx.obj['collection_id']
-    blog_id: str = create_slug_from_name(blog_id)
+    blog_id: str = create_id_from_name(blog_id)
     write_info(f"Creating: \"{blog_id}\"")
     try:
         create_blog(blog_id, collection_id)
@@ -122,6 +122,7 @@ def cli_blogs_create(ctx, blog_id: str):
         write_error(tb)
 
     write_success("Done")
+    return 1
 
 
 @cli_blogs.command("open", help="Open an existing blog from the collection specified.")
@@ -173,6 +174,38 @@ def cli_collections(ctx, collections_path: str):
     return 0
 
 
+@cli_collections.command("fix")
+@click.option("--collection-id", "-c", "collection_id", type=str, default=get_default_collection_name(), help="The ID for the collection")
+def cli_collections_validate(ctx, collection_id: str):
+    collections_path = ctx.obj['collections_path']
+    if not collections_path:
+        raise ValueError(
+            "The absolute path to the collections is invalid or null")
+    
+    if not os.path.exists(collections_path):
+        raise ValueError("The collections path is invalid or null")
+    
+@cli_collections.command("validate")
+@click.option("--collection-id", "-c", "collection_id", type=str, default=get_default_collection_name(), help="The ID for the collection")
+@click.option("--all", "-a", "validate_all", is_flag=True, help="If all collections should be verified.")
+def cli_collections_validate(ctx, collection_id: str, validate_all: bool):
+    collections_path = ctx.obj['collections_path']
+    if not collections_path:
+        raise ValueError(
+            "The absolute path to the collections is invalid or null")
+    
+    if not os.path.exists(collections_path):
+        raise ValueError("The collections path is invalid or null")
+    
+    error_messages = []
+    for collection in os.listdir(collections_path):
+        return
+    
+    if any(error_messages):
+        for msg in error_messages:
+            write_error(msg)
+
+
 @cli_collections.command("list", help="List all the collections.")
 @click.option("--short", "-s", "short", is_flag=True, required=False, help="Display a shorter output from the list of collections.")
 @click.pass_context
@@ -215,7 +248,7 @@ def cli_collections_create(ctx, names: List[str]):
             f"Failed: unable to find the path \"{collections_path}\"")
 
     for name in names:
-        collection_slug_name = create_slug_from_name(name)
+        collection_slug_name = create_id_from_name(name)
 
         if is_valid_collection(collection_slug_name):
             write_error(f"The collection \"{names}\" already exists")
@@ -264,10 +297,11 @@ def cli_upload(ctx):
 
 
 @cli_upload.command("blog", help="Upload a blog.")
-@click.option("--name", "-n", "name", type=str, default=None, required=True, prompt=True, prompt_required=True)
+@click.option("--blog-id", "-b", "blog_id", type=str, default=None, required=True, prompt=True, prompt_required=True)
 @click.option("--collection-id", "-c", "collection_id", type=str, default="default", required=True, prompt=True, prompt_required=True)
+@click.option("--collections-path", "-c", "collection_path", type=str, default=get_default_collections_path(), required=False)
 @click.pass_context
-def cli_upload_blog(ctx, name: str, collection: str):
+def cli_upload_blog(ctx, blog_id: str, collection_id: str, collections_path: str):
     return
 
 
@@ -282,9 +316,9 @@ def cli_upload_collection(ctx, collections_path: str):
 
 @cli.group("export", help="Render the blog out to a path specified.")
 @click.option("--exporter", type=click.Choice(get_exporter_modules(), case_sensitive=True), multiple=True, required=True, help="The type qualification for the exporter to use.")
-@click.option("--collections-path", "-p", "collections_path", default=get_default_collections_path(), help="The absolute path to where the collections are stored.")
+@click.option("--collections-path", "-p", "collections_path", default=get_default_collections_path(), required=False, help="The absolute path to where the collections are stored.")
 @click.option("--collection-id", "-c", "collection_id", default=get_default_collection_name(), required=False, help="The ID or name of the collection to export the blog from.")
-@click.option("--blog-id", "-b", "blog_id", help="Overwrite any exported blogs if they exist already.")
+@click.option("--blog-id", "-b", "blog_id", required=True, help="Overwrite any exported blogs if they exist already.")
 @click.option("--force", "-f", "force", is_flag=True, help="Overwrite any exported blogs if they exist already.")
 @click.option("--output-path", "-o", "output_path", type=str, help="The output path for the exporter (where relevant).")
 @click.pass_context

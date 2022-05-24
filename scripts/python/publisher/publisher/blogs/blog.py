@@ -6,10 +6,10 @@ from pydantic import BaseModel
 
 
 class BlogMetadata(BaseModel):
+    id: str  # The ID or identifier
     name: str
     checksum: str
     summary: str
-    slug: str  # The ID or identifier
     tags: Optional[List[str]]
     path: str  # The path to where the blog is located.
     filepath: str

@@ -1,7 +1,7 @@
 import re
 
 
-def create_slug_from_name(blog_name: str) -> str:
+def create_id_from_name(blog_name: str) -> str:
     """Generate the slug name from the name of the blog
 
     Args:

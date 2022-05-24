@@ -1,6 +1,6 @@
 import os
 import subprocess
-from publisher.utility.utility_names import create_slug_from_name
+from publisher.utility.utility_names import create_id_from_name
 
 _repo_root = None
 
@@ -127,7 +127,7 @@ def get_collection_path(collection_name: str, collections_path: str = get_defaul
     if not collection_name:
         raise ValueError("The name of the collection is invalid or null")
 
-    collection_slug = create_slug_from_name(collection_name)
+    collection_slug = create_id_from_name(collection_name)
 
     if not collection_slug:
         raise ValueError("The slug name is invalid or null")
@@ -138,7 +138,7 @@ def get_collection_path(collection_name: str, collections_path: str = get_defaul
 def get_collection_metadata_path(collection_id: str, collections_path: str = get_default_collections_path()) -> str:
     if collection_id is None:
         raise ValueError("The name of the collection is invalid or null")
-    collection_id = create_slug_from_name(collection_id)
+    collection_id = create_id_from_name(collection_id)
     return os.path.join(collections_path, collection_id, ".metadata")
 
 

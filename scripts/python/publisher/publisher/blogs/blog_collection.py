@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 
 class BlogCollectionMetadata(BaseModel):
+    id: str
     name: str
     description: str
     summary: str
@@ -13,7 +14,6 @@ class BlogCollectionMetadata(BaseModel):
     filepath: Optional[str]
     tags: Optional[List[str]]
     metadata: dict[str, dict]
-    slug: str
 
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
