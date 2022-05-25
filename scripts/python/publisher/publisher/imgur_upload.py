@@ -1,4 +1,3 @@
-from os import environ
 import sys
 import rich_click as click
 import requests

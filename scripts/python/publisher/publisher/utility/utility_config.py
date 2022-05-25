@@ -1,5 +1,7 @@
 from configparser import ConfigParser
 from distutils.sysconfig import get_config_h_filename
+from pathlib import Path
+import os
 from typing import Any, List
 
 from publisher.utility.utility_paths import get_default_config_filepath, get_default_user_config_filepath
@@ -24,6 +26,10 @@ def _get_user_config() -> ConfigParser:
     config_parser = ConfigParser()
     config_parser.read(get_default_user_config_filepath())
     return config_parser
+
+
+def get_application_user_path(*paths):
+    return os.path.join(Path.home(), "publisher", *paths)
 
 
 def is_config_property(property_section_id: str, property_id: str) -> bool:
