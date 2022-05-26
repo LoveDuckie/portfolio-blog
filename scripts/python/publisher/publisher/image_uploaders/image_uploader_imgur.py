@@ -13,6 +13,9 @@ class ImgurImageUploader(ImageUploaderInterface):
         client_secret = kwargs['client_secret'] if 'client_secret' in kwargs else get_config_property(
             "publisher.image-uploader.imgur", "client-secret")
 
+    def requires_authentication(self) -> bool:
+        return True
+
     def authenticate(self):
         return super().authenticate()
 

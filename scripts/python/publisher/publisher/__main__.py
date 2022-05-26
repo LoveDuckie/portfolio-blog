@@ -279,7 +279,7 @@ def cli_config_exporter(parameters: List[str]):
 
 
 @cli_config.command("uploader")
-@click.option("--type", "-t", type=str, help="The absolute type path for the uploader.")
+@click.option("--type", "-t", type=str, help="The type name")
 @click.option("--parameter", '-p', "parameters", type=str, required=True, prompt_required=True, prompt="Parameter", default=[], help="The parameters to set, as key/value pairs.")
 @click.pass_context
 def cli_config_exporter(parameters: List[str]):

@@ -4,6 +4,7 @@ from abc import abstractmethod
 from typing import List
 
 from publisher.blogs.blog import Blog
+import rich_click as click
 
 
 class ExporterInterface:
@@ -28,3 +29,8 @@ class ExporterInterface:
         if output_path is None:
             raise ValueError("The target output path is invalid or null")
         return
+    
+    @abstractmethod
+    def extend_cli(self, cli_group: click.Group):
+        if cli_group is None:
+            raise ValueError("The cli group is invalid or null")

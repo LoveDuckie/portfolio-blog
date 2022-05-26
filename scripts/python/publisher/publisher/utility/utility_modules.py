@@ -1,6 +1,21 @@
 
 import importlib
-from typing import Any
+import inspect
+from typing import Any, List, Type
+
+
+def get_subclass_types_from_module(module_path, type: Type) -> List:
+    """Retrieve a list of types that are subclass of the other type parameter.
+
+    Args:
+        module_path (str): The absolute path to the module
+        type (Type): The type that this class should be a subclass of.
+
+    Returns:
+        List: A list of types that derive from the subclass.
+    """
+    module_instance = importlib.import_module(module_path)
+    return [obj for name, obj in inspect.getmembers(module_instance) if inspect.isclass(obj) and issubclass(obj, type)]
 
 
 def create_type_from_module_path(module_type_path: str, **kwargs) -> Any:
@@ -33,7 +48,6 @@ def create_type_from_module_path(module_type_path: str, **kwargs) -> Any:
         raise ValueError("Failed to expand the exporter type definition")
 
     type_module: str = '.'.join(module_type_path.split('.')[-1])
-
     type_module_instance = importlib.import_module(type_module)
 
     if not type_module_instance:
@@ -46,5 +60,5 @@ def create_type_from_module_path(module_type_path: str, **kwargs) -> Any:
     module_type_instance = module_type(**kwargs)
     if module_type_instance is None:
         raise ValueError("The exporter instance is invalid or null")
-    
+
     return module_type_instance
