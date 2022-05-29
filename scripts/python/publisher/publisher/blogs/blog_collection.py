@@ -10,7 +10,7 @@ from publisher.blogs.blog import Blog
 class BlogCollectionMetadata(BaseModel):
     id: str
     name: str
-    description: str
+    description: Optional[str]
     summary: Optional[str]
     metadata: dict[str, dict]
     path: Optional[str]
@@ -26,10 +26,9 @@ class BlogCollectionMetadata(BaseModel):
             raise ValueError("The metadata file path is invalid or null")
 
         metadata_path = os.path.dirname(metadata_filepath)
-        if not os.path.exist(metadata_path):
-            raise IOError(f"The path \"{metadata_path}\" does not exist.")
+        if not os.path.exists(metadata_path):
+            os.makedirs(metadata_path)
 
-        os.makedirs(metadata_path)
         collection_metadata = cls(**kwargs)
         collection_metadata.save(metadata_filepath)
 
@@ -97,3 +96,6 @@ class BlogCollection:
 
         setattr(self, "blogs", blogs)
         return blogs
+
+    def _load_blogs(self):
+        return

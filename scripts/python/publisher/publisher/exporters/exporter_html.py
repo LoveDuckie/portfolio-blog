@@ -1,5 +1,7 @@
 
 
+from publisher.utility.utility_constructor import _init_parameter
+import rich_click as click
 from publisher.blogs.blog import Blog
 from publisher.exporters.exporter_interface import ExporterInterface
 import markdown
@@ -10,18 +12,22 @@ logger = get_logger()
 
 
 class HtmlExporter(ExporterInterface):
-    def __init__(self, blog: Blog, *args, **kwargs) -> None:
-        super().__init__(blog, *args, **kwargs)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        _init_parameter(self, "extensions", kwargs, False)
+        _init_parameter(self, "stylesheets", kwargs, False)
 
-    def export(self, output_path: str):
-        super().export(output_path)
+    def extend_cli(self, cli_group: click.Group):
+        return super().extend_cli(cli_group)
 
-        if not hasattr(self, "blog"):
-            raise ValueError(
-                "Failed to find the blog attribute in the exporter")
+    def export(self, blog: Blog, output_path: str):
+        super().export(blog, output_path)
+        blog_content = blog.content
+        if blog_content is None:
+            raise ValueError("The blog content is invalid or null")
 
-        blog_content = self.blog.content
+        rendered_html = markdown.markdown(
+            blog_content, extensions=self._extensions if hasattr(self, "_extensions") else [])
 
-        rendered_html = markdown.markdown("", extensions=[])
         if rendered_html is None:
             raise ValueError("The rendered HTML is invalid or null")

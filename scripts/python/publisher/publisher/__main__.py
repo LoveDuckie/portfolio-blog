@@ -229,10 +229,12 @@ def cli_collections_delete(ctx, names: List[str]):
         raise ValueError("The names specified are invalid or null")
 
 
-@cli_collections.command("create", help="Create the collection specified.")
-@click.option("--name", "-n", "names", required=True, prompt="Names", prompt_required=True, multiple=True, type=str, help="The name(s) of the collection to create.")
-def cli_collections_create(ctx, names: List[str]):
-    if names is None:
+@cli_collections.command("create", help="Create a new collection of blogs.")
+@click.option("--name", "-n", "name", required=True, prompt="Names of Collection", prompt_required=True, help="The name(s) of the collection to create.")
+@click.option("--description", "-d", "description", required=False, prompt="Description of Collection", help="The useful description of the collection.")
+@click.pass_context
+def cli_collections_create(ctx, name: str, description: str):
+    if name is None:
         raise ValueError("The name is invalid or null")
 
     if 'collections_path' not in ctx.obj:
@@ -248,13 +250,15 @@ def cli_collections_create(ctx, names: List[str]):
         raise IOError(
             f"Failed: unable to find the path \"{collections_path}\"")
 
-    for name in names:
-        collection_id = create_id_from_name(name)
+    collection_id = create_id_from_name(name)
 
-        if is_valid_collection(collection_id):
-            write_error(f"The collection \"{names}\" already exists")
+    if is_valid_collection(collection_id):
+        write_error(
+            f"The collection \"{name}\" already exists in \"{get_default_collections_path()}\".")
+        return
 
-        create_collection(collection_id, collections_path)
+    write_info(f"Creating: \"{name}\"")
+    create_collection(collection_id, collections_path)
 
     write_success("Done")
 
