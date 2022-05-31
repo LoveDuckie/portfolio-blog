@@ -1,6 +1,6 @@
 
 
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 import os
 from typing import List
 

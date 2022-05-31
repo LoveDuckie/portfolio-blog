@@ -3,9 +3,11 @@ from gql import Client
 from gql.transport.aiohttp import AIOHTTPTransport
 import rich_click as click
 
+from publisher.utility.utility_click import write_success
+
 
 def _cli_command_get_blogs(ctx):
-    return
+    write_success("Done")
 
 
 def get_hashnode_api_url(*paths) -> str:
@@ -26,7 +28,7 @@ class HashNodeUploader(UploaderInterface):
 
         super().__init__(*args, **kwargs)
 
-    async def upload(self, content:str, **kwargs):
+    async def upload(self, content: str, **kwargs):
         return super().upload(content, **kwargs)
 
     def extend_cli(self, cli_group: click.Group):

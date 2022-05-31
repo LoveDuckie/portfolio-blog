@@ -1,5 +1,4 @@
 from configparser import ConfigParser
-from distutils.sysconfig import get_config_h_filename
 from pathlib import Path
 import os
 from typing import Any, List

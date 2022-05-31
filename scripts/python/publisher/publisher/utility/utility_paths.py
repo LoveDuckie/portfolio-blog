@@ -43,6 +43,10 @@ def get_default_blog_metadata_filename() -> str:
     return "blog.json"
 
 
+def get_default_metadata_path_name() -> str:
+    return ".metadata"
+
+
 def get_default_config_filepath() -> str:
     """Get the absolute path to the default configuration file
 
@@ -136,7 +140,7 @@ def get_collection_metadata_path(collection_id: str = get_default_collection_nam
     if collection_id is None:
         raise ValueError("The name of the collection is invalid or null")
     collection_id = create_id_from_name(collection_id)
-    return os.path.join(collections_path, collection_id, ".metadata")
+    return os.path.join(collections_path, collection_id, get_default_metadata_path_name())
 
 
 def get_collection_metadata_filepath(collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> str:
@@ -158,7 +162,7 @@ def get_blog_metadata_path(blog_id: str, collection_id: str = get_default_collec
     if collection_id is None:
         raise ValueError("The collection ID is invalid or null")
 
-    return os.path.join(get_blog_path(blog_id, collection_id, collections_path), ".metadata")
+    return os.path.join(get_blog_path(blog_id, collection_id, collections_path), get_default_metadata_path_name())
 
 
 def get_blog_metadata_filepath(blog_id: str, collection_id: str = get_default_collection_name(), collections_path: str = get_default_collections_path()) -> str:

@@ -1,10 +1,11 @@
 import os
 import sys
 from typing import List
+from publisher.blogs.blog_collection import BlogCollection
 from publisher.logging.publisher_logger import get_logger
 import traceback
 import rich_click as click
-from publisher.utility.utility_blogs import create_blog, create_collection, get_blogs, is_valid_collection
+from publisher.utility.utility_blogs import create_blog, create_collection, get_blogs, get_collections, is_valid_blog, is_valid_collection
 from publisher.utility.utility_click import write_error, write_info, write_success
 from publisher.utility.utility_exporters import get_exporter_modules_names
 from publisher.utility.utility_names import create_id_from_name
@@ -134,6 +135,7 @@ def cli_blogs_create(ctx, blog_id: str, blog_name: str, blog_description: str, b
 def cli_blogs_create(ctx, blog_id: str):
     if blog_id is None:
         raise ValueError("The blog ID specified is invalid or null")
+
     write_success("Done")
 
 
@@ -143,6 +145,11 @@ def cli_blogs_create(ctx, blog_id: str):
 def cli_blogs_delete(ctx, blog_id: str):
     if blog_id is None:
         raise ValueError("The blog ID is invalid or null")
+    collection_id = ctx.obj['collection_id']
+    collections_path = ctx.obj['collections_path']
+
+    if not is_valid_blog(blog_id, collection_id, collections_path):
+        write_error(f"The blog \"{blog_id}\" is not valid.")
     write_success("Done")
 
 
@@ -150,12 +157,15 @@ def cli_blogs_delete(ctx, blog_id: str):
 @click.pass_context
 def cli_blogs_list(ctx):
     collection_id = ctx.obj['collection_id']
+    collections_path = ctx.obj['collections_path']
+
     blogs = get_blogs(collection_id)
 
     if not blogs:
         raise ValueError("The blogs found are invalid or null")
 
     write_info(f"Blogs found in collection \"{collection_id}\"")
+
     for blog in blogs:
         write_info(f"Blog: \"{blog.name}\"")
 
@@ -211,27 +221,33 @@ def cli_collections_validate(ctx, collection_id: str, validate_all: bool):
 @click.option("--short", "-s", "short", is_flag=True, required=False, help="Display a shorter output from the list of collections.")
 @click.pass_context
 def cli_collections_list(ctx, short: bool):
-    if 'collections_path' not in ctx.obj:
-        raise KeyError("Failed: unable to find the path to collections")
     collections_path = ctx.obj['collections_path']
-    if collections_path is None:
-        raise ValueError(
-            "The collections path is invalid or null. Unable to continue.")
+    collections: List[BlogCollection] = get_collections(collections_path)
+
+    if not collections:
+        raise ValueError("The collections are invalid or null")
+
+    write_info(f"Collections Path: \"{collections_path}\"")
+    for collection in collections:
+        continue
 
     write_success("Done")
 
 
 @cli_collections.command("delete", help="Delete the collections specified.")
-@click.option("--name", "-n", "names", type=str, prompt="Name", multiple=True, required=True, help="The slug ID(s) of he collection(s) to delete.")
+@click.option("--collection-id", "-c", "collection_ids", type=str, prompt="Collection ID", multiple=True, required=True, help="The slug ID(s) of he collection(s) to delete.")
 @click.pass_context
-def cli_collections_delete(ctx, names: List[str]):
-    if not names:
+def cli_collections_delete(ctx, collections: List[str]):
+    if not collections:
         raise ValueError("The names specified are invalid or null")
+
+    for collection in collections:
+        continue
 
 
 @cli_collections.command("create", help="Create a new collection of blogs.")
-@click.option("--name", "-n", "name", required=True, prompt="Names of Collection", prompt_required=True, help="The name(s) of the collection to create.")
-@click.option("--description", "-d", "description", required=False, prompt="Description of Collection", help="The useful description of the collection.")
+@click.option("--name", "-n", "name", required=True, prompt="Name of the collcetion", prompt_required=True, help="The name(s) of the collection to create.")
+@click.option("--description", "-d", "description", required=False, prompt="Description of the collection", help="The useful description of the collection.")
 @click.pass_context
 def cli_collections_create(ctx, name: str, description: str):
     if name is None:
@@ -252,14 +268,17 @@ def cli_collections_create(ctx, name: str, description: str):
 
     collection_id = create_id_from_name(name)
 
-    if is_valid_collection(collection_id):
+    if is_valid_collection(collection_id, collections_path):
         write_error(
-            f"The collection \"{name}\" already exists in \"{get_default_collections_path()}\".")
-        return
+            f"The collection \"{name}\" already exists in \"{collections_path}\".")
+        return 1
 
-    write_info(f"Creating: \"{name}\"")
-    create_collection(collection_id, collections_path)
-
+    write_info(f"Creating: \"{collection_id}\" in \"{collections_path}\"")
+    collection = create_collection(
+        collection_id, collections_path, description=description, name=name)
+    if not collection:
+        raise ValueError(
+            f"Failed: unable to create the collection \"{collection_id}\" in \"{collections_path}\"")
     write_success("Done")
 
 
@@ -306,16 +325,31 @@ def cli_upload(ctx):
 @click.option("--collections-path", "-c", "collection_path", type=str, default=get_default_collections_path(), required=False)
 @click.pass_context
 def cli_upload_blog(ctx, blog_id: str, collection_id: str, collections_path: str):
-    return
+    if not blog_id:
+        raise ValueError("The blog ID is invalid or null")
+    if not collection_id:
+        raise ValueError("The collect ID is invalid or null")
+    if not collections_path:
+        raise ValueError("The collections path is invalid or null")
+
+    if not is_valid_collection(collection_id, collections_path):
+        write_error(f"The collection \"{collection_id}\" is not valid.")
+        return 1
+    if not is_valid_blog(blog_id, collection_id, collections_path):
+        write_error(f"The blog \"{blog_id}\" is not valid.")
+        return 2
+    return 1
 
 
 @cli_upload.command("collection", help="Upload a collection.")
-@click.option('--name', '-n', type=str, default=None, required=True, prompt=True, prompt_required=True)
-@click.option('--collections-path', '-c', 'collections_path', type=str, default=get_default_collections_path(), required=False, prompt=True, prompt_required=True)
+@click.option('--collection-id', '-c', 'collection_id', type=str, default=None, required=True, prompt=True, prompt_required=True)
+@click.option('--collections-path', '-p', 'collections_path', type=str, default=get_default_collections_path(), required=False, prompt=True, prompt_required=True)
 @click.pass_context
-def cli_upload_collection(ctx, collections_path: str):
+def cli_upload_collection(ctx, collection_id: str, collections_path: str):
     if collections_path is None:
         raise ValueError("The collections path specified is invalid or null")
+    if collection_id is None:
+        raise ValueError("The collection ID specified is invalid or null")
 
 
 @cli.group("export", help="Render the blog out to a path specified.")
