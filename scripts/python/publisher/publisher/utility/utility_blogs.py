@@ -267,6 +267,7 @@ def get_blogs(collection_id: str = get_default_collection_name(), collections_pa
     if not os.path.exists(metadata_filepath):
         raise IOError(
             f"Failed: unable to find the file \"{metadata_filepath}\"")
+    
     for blog_id in os.listdir(collection_path):
         blog_metadata_filepath = get_blog_metadata_filepath(
             blog_id, collection_id, collections_path)

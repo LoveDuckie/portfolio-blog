@@ -6,7 +6,7 @@ from publisher.logging.publisher_logger import get_logger
 import traceback
 import rich_click as click
 from publisher.utility.utility_blogs import create_blog, create_collection, get_blogs, get_collections, is_valid_blog, is_valid_collection
-from publisher.utility.utility_click import write_error, write_info, write_success
+from publisher.utility.utility_click import write_debug, write_error, write_info, write_success
 from publisher.utility.utility_exporters import get_exporter_modules_names
 from publisher.utility.utility_names import create_id_from_name
 from publisher.utility.utility_paths import get_default_collection_name, get_default_collections_path
@@ -159,7 +159,10 @@ def cli_blogs_list(ctx):
     collection_id = ctx.obj['collection_id']
     collections_path = ctx.obj['collections_path']
 
-    blogs = get_blogs(collection_id)
+    write_info(f"Listing Blogs: \"{collection_id}\"")
+    write_debug(f"Collections Path: \"{collections_path}\"")
+
+    blogs = get_blogs(collection_id, collections_path)
 
     if not blogs:
         raise ValueError("The blogs found are invalid or null")
@@ -194,6 +197,11 @@ def cli_collections_validate(ctx, collection_id: str, validate_all: bool):
 
     if not os.path.exists(collections_path):
         raise ValueError("The collections path is invalid or null")
+
+    if not collection_id:
+        raise ValueError("The collection ID specified is invalid or null")
+
+    write_success("Done")
 
 
 @cli_collections.command("validate", help="Validate the collection and determine if there are any errors.")
@@ -243,6 +251,8 @@ def cli_collections_delete(ctx, collections: List[str]):
 
     for collection in collections:
         continue
+
+    write_success("Done")
 
 
 @cli_collections.command("create", help="Create a new collection of blogs.")
@@ -309,7 +319,7 @@ def cli_config_exporter(parameters: List[str]):
     if parameters is None:
         raise ValueError("The parameters are invalid or null.")
     if not any(parameters):
-        raise Exception("No parameters were found.")
+        raise ValueError("No parameters were found.")
 
 
 @cli.group("upload", help="Upload a collection of blogs or a single blog.")
