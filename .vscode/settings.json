@@ -6,7 +6,11 @@
         "*.markdown": "markdown"
     },
     "[markdown]": {
-        "editor.quickSuggestions": true
+        "editor.quickSuggestions": {
+            "comments": "on",
+            "strings": "on",
+            "other": "on"
+        }
     },
     "python.pythonPath": "${workspaceFolder}\\scripts\\python\\publisher\\venv\\Scripts\\python.exe"
 }

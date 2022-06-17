@@ -87,8 +87,6 @@ is_package_installed() {
     return 1
 }
 
-
-
 export -f write_header
 export -f write_info
 export -f write_warning
