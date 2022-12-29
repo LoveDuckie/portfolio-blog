@@ -6,7 +6,7 @@ from logging.handlers import RotatingFileHandler
 
 publisher_logger = None
 
-loggers: dict[str,Logger] = None
+loggers: dict[str, Logger] = None
 
 
 def get_default_log_filename() -> str:
@@ -15,6 +15,7 @@ def get_default_log_filename() -> str:
 
 def get_default_log_filepath() -> str:
     return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "logs"))
+
 
 def _create_logger(logger_name: str = 'publisher') -> Logger:
     if logger_name is None:

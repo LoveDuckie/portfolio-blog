@@ -3,6 +3,14 @@ name = "publisher"
 version = "0.1.0"
 description = "A command-line tool for publishing articles to tech blogging platforms."
 authors = ["Luc Shelton <lucshelton@gmail.com>"]
+readme = "README.md"
+homepage = "https://github.com/loveduckie/portfolio-blog"
+repository = "https://github.com/loveduckie/portfolio-blog"
+documentation = "https://github.com/loveduckie/portfolio-blog/-/wikis/home"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -14,10 +22,16 @@ pydantic = "^1.9.0"
 pendulum = "^2.1.2"
 python-dotenv = "^0.20.0"
 questionary = "^1.10.0"
-gql = {extras = ["all"], version = "^3.3.0"}
+gql = { extras = ["all"], version = "^3.3.0" }
+rich = "^12.6.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+
+[tool.poetry.group.test.dependencies]
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^5.3.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -26,3 +40,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 publisher = 'publisher.__main__:cli'
 imgur = 'publisher.imgur_upload:cli'
+
+[tool.poetry_bumpversion.file."publisher/__init__.py"]
+search = '__version__ = "{current_version}"'
+replace = '__version__ = "{new_version}"'
